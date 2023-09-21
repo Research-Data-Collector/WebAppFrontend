@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import FooterDefault from "../components/common/Footer-Default.vue";
+import FooterDefault from "./components/common/Footer-Default.vue";
 
 
 export default {
