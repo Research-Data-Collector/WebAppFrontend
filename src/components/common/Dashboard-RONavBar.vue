@@ -39,27 +39,27 @@
   
                 <!-- Side drawer menu items will go here. Make sure you add correct icons. -->
   
-                <router-link to="/my-home/create-forms" style="text-decoration: none;">
+                <router-link to="/dashboard-research-owner/create-forms" style="text-decoration: none;">
                   <v-list-item prepend-icon="mdi-plus-box" class="pl-0 pr-0" title="Create Forms" value="create-forms"
                     style="font-size: xx-small;">
                   </v-list-item>
                 </router-link>
   
-                <router-link to="/my-home/join-requests" style="text-decoration: none;">
+                <router-link to="/dashboard-research-owner/join-requests" style="text-decoration: none;">
                   <v-list-item
                     prepend-icon="mdi-account-multiple-plus" class="pl-0 pr-0" title="Join Requests" value="join-req"
                     style="font-size: xx-small;">
                   </v-list-item>
                 </router-link>
   
-                <router-link to="/my-home/published-forms" style="text-decoration: none;">
+                <router-link to="/dashboard-research-owner/published-forms" style="text-decoration: none;">
                   <v-list-item
                     prepend-icon="mdi-view-list" class="pl-0 pr-0" title="Published Forms" value="published-forms"
                     style="font-size: xx-small;">
                   </v-list-item>
                 </router-link>
   
-                <router-link to="/my-home/data-visualization" style="text-decoration: none;">
+                <router-link to="/dashboard-research-owner/data-visualization" style="text-decoration: none;">
                   <v-list-item
                     prepend-icon="mdi-chart-histogram" class="pl-0 pr-0" title="Data Visualization" value="data-visualize"
                     style="font-size: xx-small;">
@@ -108,6 +108,9 @@
     name: "RONavBar",
   
     data: () => ({
+      drawer: true,
+      menu: false,
+    
       
     }),
   

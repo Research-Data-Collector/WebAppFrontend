@@ -16,9 +16,7 @@
   
 <script>
 import RONavBar from '../common/Dashboard-RONavBar.vue';
-import FooterDefault from "../common/Footer-Default.vue";
-//import FormTable from '../views/FormTable.vue';
-
+import FooterDefault from '../common/Footer-Default.vue';
 
 export default {
     name: "Dashboard-ResOwner",
