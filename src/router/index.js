@@ -12,6 +12,8 @@ import CreateForms from '../views/Research-Owner/CreateForms.vue'
 import JoinRequests from '../views/Research-Owner/JoinRequests.vue'
 import PublishedForms from '../views/Research-Owner/PublishedForms.vue'
 
+import OtpDialog from "../views/common/OtpDialog.vue";
+import CreateOrganization from "../views/common/CreateOrganization.vue";
 
 const routes = [
     {
@@ -65,6 +67,16 @@ const routes = [
             name: 'published-forms',
             component: PublishedForms,
         }]
+    },
+    {
+        path: "/verify-otp",
+        name: "verify-otp",
+        component: OtpDialog,
+    },
+    {
+        path: "/create-organization",
+        name: "create-organization",
+        component: CreateOrganization,
     },
 
 ];
