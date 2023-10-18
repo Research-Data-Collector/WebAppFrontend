@@ -98,6 +98,7 @@
 
 
 <script>
+//connect survey element
 export default {
     name: 'SurveyCreator',
     data() {
