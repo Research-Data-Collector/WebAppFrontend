@@ -9,7 +9,7 @@
         <v-row style="height: 100px;">
           <v-col>
             <div class="content-box">
-              <v-img src="../assets/survey-y-logo.png" class="mx-auto" style="width: 100px; height: 60px;"></v-img>
+              <v-img src="/src/assets/survey-y-logo.png" class="mx-auto" style="width: 100px; height: 60px;"></v-img>
             </div>
           </v-col>
         </v-row>

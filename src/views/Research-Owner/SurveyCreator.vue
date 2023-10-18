@@ -3,15 +3,18 @@
         <h1>Custom Form Creator</h1>
 
         <form>
-            <div><input type="text" v-model="formtitle" placeholder="Enter Form Title">
-            <div><input type="text" v-model="formdescription" placeholder="Enter Form Description"></div>
+            <div> 
+                <div><input type="text" v-model="formtitle" placeholder="Enter Form Title"></div>
+                <div><input type="text" v-model="formdescription" placeholder="Enter Form Description"></div>
 
             </div>
             <div v-for="(question, index) in questions" :key="index">
+                <div class="mt-4"></div>
                 <label>{{ index + 1 + ') ' }}Question:</label>
                 <input type="text" v-model="question.text">
 
                 <v-btn type="button" @click="removeQuestion(index)">Remove Question</v-btn>
+                <div class="mt-4"></div>
 
                 <div v-if="question.type === 'text'">
                     <!--<label>Response:</label>-->
@@ -21,11 +24,16 @@
                 <div v-else-if="question.type === 'multipleChoice'">
                     <label>Options:</label>
                     <div class="options" v-for="(option, optionIndex) in question.options" :key="optionIndex">
+                        <div class="mt-4"></div>
                         <input type="text" v-model="option.text">
                         <!----><input v-show="showResponses" type="checkbox" v-model="option.correct">
+                        <div class="mt-4"></div>
                         <v-btn type="button" @click="removeOption(question, optionIndex)">Remove Option</v-btn>
+                        <div class="mt-4"></div>
                     </div>
+                    <div class="mt-8"></div>
                     <v-btn type="button" @click="addOption(question)">Add Option</v-btn>
+                    <div class="mt-4"></div>
                     <!--<label>Response:</label>-->
                     <!----> <select v-show="showResponses" v-model="question.response">
                         <option v-for="(option, optionIndex) in question.options" :key="optionIndex" :value="option.text">{{
@@ -42,8 +50,11 @@
                             :value="option.text" v-model="question.response" :name="`q${index}`">
                         <!----><label v-show="showResponses" :for="`q${index}_o${optionIndex}`">{{ option.text }}</label>
                         <v-btn type="button" @click="removeOption(question, optionIndex)">Remove Option</v-btn>
+                        <div class="mt-4"></div>
                     </div>
+                    <div class="mt-4"></div>
                     <v-btn type="button" @click="addOption(question)">Add Option</v-btn>
+                    <div class="mt-4"></div>
                 </div>
 
 
@@ -71,6 +82,9 @@
             </div>
 
         </form>
+        <div class="mt-4"></div>
+        <v-divider></v-divider>
+        <div class="mt-4"></div>
         <div class="main-question">
             <label> Select Question Type:</label>
             <select v-model="selectedType">
@@ -85,11 +99,15 @@
                 <!-- <option value="multipleSelect">Multiple Select</option> -->
             </select>
             <v-btn @click="addQuestion">Add Question</v-btn>
+            <div class="mt-4"></div>
         </div>
 
 
     </div>
-    <v-btn type="button" class="submit-button" @click.prevent="saveSurvey">Save Survey</v-btn>
+    <div class="mt-4"></div>
+    <v-btn type="button" class="submit-button" @click.prevent="submitForm">Save Survey</v-btn>
+    <div class="mt-4"></div>
+
     <v-btn v-if="false" @click="toggleResponses" type="button" class="submit-button">Toggle</v-btn>
     <p v-if="true">{{ questions }}</p>
 </template>
@@ -98,7 +116,9 @@
 
 
 <script>
-//connect survey element
+import axios from "axios";
+import { server } from "../../helper";
+
 export default {
     name: 'SurveyCreator',
     data() {
@@ -107,7 +127,7 @@ export default {
             formtitle: '',
             formdescription: '',
             questions: [],
-            showResponses: false,
+            showResponses: true,
 
             createdForms: []
         }
@@ -146,19 +166,45 @@ export default {
         },
         saveSurvey() {
             //handle the form submission here, e.g., send responses to a server
-            this.createdForms.push({title: this.formtitle, description: this.formdescription, questions: this.questions});
-            this.questions=[];
+            this.createdForms.push({ title: this.formtitle, description: this.formdescription, questions: this.questions });
+            this.questions = [];
         },
 
 
         toggleResponses() {
             this.showResponses = !this.showResponses;
 
-
-        }
-
-
+        },
         //To be able to Drag Questions so that they can be rearranged
+
+        submitForm() {
+            const jsonData = {
+                orgId: 2,//nneed to be computed from user Id -> orgId
+                title: this.formtitle,
+                //description: this.formdescription,
+                data: this.questions}
+            const data = JSON.stringify(jsonData);
+
+            console.log(data);
+
+            // Send the JSON data to the backend (e.g., using Axios)
+            this.sendDataToBackend(data);
+        },
+       
+        async sendDataToBackend(jsonData) {
+            try{
+                const response = await axios.post(`${server.baseURL}/admin/uploadform`, jsonData, {
+                    headers: {
+                        'Content-Type': 'application/json'  //not sure if this is needed
+                    }
+                });
+                console.log('Data sent successfully!');
+                console.log(response);
+            }catch(error){
+                console.log(error);
+            }
+        }
+    
     }
 }
 
@@ -180,9 +226,10 @@ body {
 
 }
 
-.main-question button{
+.main-question button {
     background-color: rgb(177, 241, 211);
 }
+
 .survey {
     max-width: 800px;
     margin: 0 auto;
@@ -214,7 +261,7 @@ input[type="date"] {
 }
 
 select {
-background-color: #f1f4fe;
+    background-color: #f1f4fe;
 }
 
 .options {
