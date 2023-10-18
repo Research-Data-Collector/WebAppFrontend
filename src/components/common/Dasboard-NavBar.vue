@@ -24,9 +24,9 @@
                                     <v-img src="/src/assets/pro-img.svg" class="mx-auto"
                                         style="width: 100px; height: 100px;"></v-img>
                                     <v-card-text>
-                                        <h4>Leroy Boone</h4>
+                                        <h4>{{ userName = (this.$store.getters.getSessionData.user.fname + " " + this.$store.getters.getSessionData.user.lname) }}</h4>
                                     </v-card-text>
-                                    <v-card-subtitle>Collector</v-card-subtitle>
+                                    <v-card-subtitle>{{ role = (this.$store.getters.getSessionData.user.roleId === 1) ? "Research Owner" : "Data Collector" }}</v-card-subtitle>
                                 </v-card>
                             </div>
                         </v-col>
@@ -89,6 +89,8 @@ export default {
   data: () => ({
     drawer: true,
     menu: false,
+    userName: "",
+    role: "",
     selectedTitle: "",
     selectedReqs: [],
     submissions: [
