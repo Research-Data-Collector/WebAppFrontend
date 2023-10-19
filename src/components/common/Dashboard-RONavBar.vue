@@ -59,13 +59,13 @@
                   </v-list-item>
                 </router-link>
   
-                <router-link to="/dashboard-research-owner/data-visualization" style="text-decoration: none;">
+                <!-- <router-link to="/dashboard-research-owner/data-visualization" style="text-decoration: none;">
                   <v-list-item
                     prepend-icon="mdi-chart-histogram" class="pl-0 pr-0" title="Data Visualization" value="data-visualize"
                     style="font-size: xx-small;">
                   </v-list-item>
                 </router-link>
-  
+   -->
               </v-list>
             </div>
           </v-col>
