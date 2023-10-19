@@ -1,8 +1,4 @@
-<!-- eslint-disable prettier/prettier -->
-/* eslint-disable */
-// eslint-disable-next-line vue/multi-word-component-names
 <template>
-    <!-- <v-app> -->
     <v-layout id="layout" class="rounded-md">
         <v-app-bar id="app-bar" color="rgba(241, 244, 254, 1)">
             <v-row align="center">
@@ -26,8 +22,8 @@
             <v-navigation-drawer location="right">
                 <v-list>
                     <v-list-item>
-                        <v-img id="right-bg" src="/src/assets/right-bg.png" alt="Your Image" class="mt-0" style="height: 100%; min-height: 640px; width: 100%"
-                            cover>
+                        <v-img id="right-bg" src="/src/assets/right-bg.png" alt="Your Image" class="mt-0"
+                            style="height: 100%; min-height: 640px; width: 100%" cover>
                         </v-img>
                     </v-list-item>
                 </v-list>
@@ -59,22 +55,27 @@
                         <div class="row-content">
                             <v-sheet width="400" class="mx-auto">
                                 <v-form fast-fail @submit.prevent="login">
-                                    <v-text-field v-model="email" label="E-mail"></v-text-field>
-                                    <v-text-field v-model="password" label="Password" type="password"></v-text-field>
+                                    <v-text-field v-model="email" label="E-mail" type="email" :rules="emailRules">
+                                    </v-text-field>
+
+                                    <v-text-field v-model="password" label="Password" type="password"
+                                        :rules="passwordRules">
+                                    </v-text-field>
                                     <div style="display: flex">
                                         <v-row max-width="100%" width="500">
                                             <v-col cols="14" md="6" class="pb-0">
                                                 <v-checkbox label="Remember Me"></v-checkbox>
                                             </v-col>
                                             <v-col cols="14" md="6">
-                                                <v-card-text class="align-center justify-center"><a href="#"
+                                                <v-card-text class="align-center justify-center"><router-link to="/forgot-password"
                                                         class="text-body-2 font-weight-regular">Forgot
-                                                        Password?</a></v-card-text>
+                                                        Password?</router-link></v-card-text>
                                             </v-col>
                                         </v-row>
                                     </div>
                                     <v-btn type="submit" block class="mt-4 mb-0 custom-button" color="blue"
                                         variant="outlined" position="relative">Submit</v-btn>
+                                        <!-- <p>{{ this.$store.getters.getSessionData }}</p> -->
                                 </v-form>
                             </v-sheet>
                         </div>
@@ -84,31 +85,79 @@
             </v-main>
         </v-content>
     </v-layout>
-    <!-- </v-app> -->
 </template>
-// eslint-disable-next-line
+
+
 <script>
+import axios from "axios";
+import { server } from "../../helper";
+
 export default {
     name: "Login",
     data() {
         return {
             email: "",
+            emailRules: [
+                v => !!v || 'Please enter your e-mail',
+                v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+            ],
             password: "",
+            passwordRules: [
+                v => !!v || 'Please enter your password',
+            ],
         };
     },
     methods: {
-        login() {
-            // login for demonstration purposes
-            const email = this.email;
-            const password = this.password;
+        async login() {
+            const userData = {
+                email: this.email,
+                password: this.password,
+            };
+            try {
+                const response = await axios.post(`${server.baseURL}/auth/login`, userData).then((response) => {
+                    console.log(userData);
+                    // Move the code that accesses 'response' inside this then block
+                    if (response.status === 201) {
+                        const responseData = response.data;
+                        const user = responseData.user;
+                        console.log(response);
 
-            if (email === "user@survey.com" && password === "pass") {
-                this.$router.push({ name: "dashboard-collector" }); // Navigate to dashboard
-            } else {
-                // Handle login failure
-                console.error("Login failed!");
+                        // Set the session data
+
+                        this.$store.dispatch('setSessionData', responseData);
+                        this.$store.dispatch('setLoginStatus', true);
+                        // console.log(this.$store.getters.getLoginStatus);
+
+                        //role based login for the users
+
+                        if (user.roleId == 1) {
+                            this.$router.push({ name: 'dashboard-research-owner' });
+                        }
+                        else if (user.roleId == 2) {
+                            this.$router.push({ name: 'dashboard-collector' });
+                        }
+                        else {
+                            alert("User Name or Password is incorrect")
+                        }
+                        // Once logged in, set the global variable to true
+                        // this.$isLoggedIn = true;
+                        // Access and use responseData here
+                        // ...
+                    } else {
+                        // Handle the case where response.data is undefined
+                        console.log("No data");
+                    }
+                });
+
+            } catch (error) {
+                // console.log(userData);
+                // console.log(error);
+                alert("User Name or Password is incorrect");
             }
         },
+        forgotPassword() {
+            this.$router.push({ name: 'forgot-password' });
+        }
     },
 };
 </script>

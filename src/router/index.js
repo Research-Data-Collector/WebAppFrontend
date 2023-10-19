@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "../store/index.js";
+
 import Login from "../views/common/LogIn.vue";
 import Signup from "../views/common/SignUp.vue";
 
@@ -12,12 +14,18 @@ import CreateForms from '../views/Research-Owner/CreateForms.vue'
 import JoinRequests from '../views/Research-Owner/JoinRequests.vue'
 import PublishedForms from '../views/Research-Owner/PublishedForms.vue'
 
+import OtpDialog from "../views/common/OtpDialog.vue";
+import CreateOrganization from "../views/common/CreateOrganization.vue";
+import UpdateUserProfile from "../views/common/UpdateUserProfile.vue"
+import ForgotPassword from "../views/common/ForgotPassword.vue"
+import NewPassword from "../views/common/EnterNewPassword.vue"
 
 const routes = [
     {
         path: "/",
         name: "login",
         component: Login,
+
     },
     {
         path: "/signup",
@@ -39,7 +47,22 @@ const routes = [
                 name: "ongoing-research",
                 component: OngoingResearch,
             },
+            {
+                path: "update-profile-2",
+                name: "update-profile-2",
+                component: UpdateUserProfile,
+            }
+
         ],
+        beforeEnter(to, from, next) {
+            const status = (store.getters.getLoginStatus);
+            if (status) {
+                next()
+            }
+            else {
+                alert("Please login first");
+            }
+        },
       },
       { 
         path: '/dashboard-research-owner',
@@ -64,7 +87,34 @@ const routes = [
             path: 'published-forms',
             name: 'published-forms',
             component: PublishedForms,
-        }]
+        },
+        {
+            path: "update-profile-1",
+            name: "update-profile-1",
+            component: UpdateUserProfile,
+        }
+    ]
+    },
+    {
+        path: "/verify-otp",
+        name: "verify-otp",
+        component: OtpDialog,
+        props: true,
+    },
+    {
+        path: "/create-organization",
+        name: "create-organization",
+        component: CreateOrganization,
+    },
+    {
+        path: "/forgot-password",
+        name: "forgot-password",
+        component: ForgotPassword,
+    },
+    {
+        path: "/new-password",
+        name: "new-password",
+        component: NewPassword,
     },
 
 ];
