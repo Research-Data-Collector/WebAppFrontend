@@ -3,19 +3,19 @@
         <v-main class="d-flex align-center justify-center pb-8" style="min-height: 400px">
             <v-sheet width="400" class="mx-auto">
                 <v-card class="align-center justify-center" flat color="transparent">
-                    <h3>Create an Organization to initiate surveys.</h3>
+                    <h3>Enter a new Password to Reset the Password.</h3>
                 </v-card>
                 <br />
                 <v-card>
-                    <v-form lazy-validation @submit.prevent="onOrganizationSubmit">
+                    <v-form lazy-validation @submit.prevent="onNewPassword">
                         <v-container>
 
-                            <v-text-field label="Enter Organization Name" v-model="orgname" type="text" required></v-text-field>
-                            <v-text-field label="Enter Your Email" v-model="email" type="text" required></v-text-field>
+                            <v-text-field label="Enter Password" v-model="password" type="password" required></v-text-field>
+                            <v-text-field label="Enter Email" v-model="email" type="text" required></v-text-field>
 
                             <br />
 
-                            <small>Please enter an Organization name to create and conduct surveys.</small>
+                            <small>Please update your passsword from Update profile after password reset.</small>
 
                             <v-card-actions>
                                 <v-spacer></v-spacer>
@@ -43,48 +43,38 @@ import router from '../../router/index.js';
 
 
 export default {
-    name: "CreateOrganization",
+    name: "passwordForgot",
     data: () => ({
         dialog: true,
-        orgname: "",
+        password: "",
         email: "",
     }),
 
     methods: {
 
-        async sendOrganization(payload) {
+        async sendPassword(payload) {
             const postData = payload;
-            const response = await axios.post(`${server.baseURL}/admin/create/organization`, postData).then((response) => {
-                // console.log(postData);
-                this.$router.push({ name: 'verify-otp' });
-                return true;
+            let email = this.email;
+            let url = `${server.baseURL}/auth/login/resetpassword/new/${email}`;
+            const response = await axios.post(url, postData).then((response) => {
+                console.log(response);
+                this.$router.push({ name: 'login'});
             }).catch((error) => {
                 console.log(error);
-                alert(error.response);
             });
         },
 
-        onOrganizationSubmit() {
-            const orgData = {
-                orgname: this.orgname,
-                email: this.email,
-            }
-            this.sendOrganization(orgData)
-            if (true) {
-                console.log(orgData);   
-            }
-            else {
-                // alert(response.data.message)
-            }
+        onNewPassword() {
+            const payload = {
+                password: this.password,
+            };
+            console.log(payload);
+            this.sendPassword(payload);
         },
 
 
     }
 
-
-
-
 }
-</script>
 
-<style></style>
+</script>

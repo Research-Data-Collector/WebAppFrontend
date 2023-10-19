@@ -67,15 +67,15 @@
                                                 <v-checkbox label="Remember Me"></v-checkbox>
                                             </v-col>
                                             <v-col cols="14" md="6">
-                                                <v-card-text class="align-center justify-center"><a href="#"
+                                                <v-card-text class="align-center justify-center"><router-link to="/forgot-password"
                                                         class="text-body-2 font-weight-regular">Forgot
-                                                        Password?</a></v-card-text>
+                                                        Password?</router-link></v-card-text>
                                             </v-col>
                                         </v-row>
                                     </div>
                                     <v-btn type="submit" block class="mt-4 mb-0 custom-button" color="blue"
                                         variant="outlined" position="relative">Submit</v-btn>
-                                        <p>{{ this.$store.getters.getSessionData }}</p>
+                                        <!-- <p>{{ this.$store.getters.getSessionData }}</p> -->
                                 </v-form>
                             </v-sheet>
                         </div>
@@ -125,6 +125,8 @@ export default {
                         // Set the session data
 
                         this.$store.dispatch('setSessionData', responseData);
+                        this.$store.dispatch('setLoginStatus', true);
+                        // console.log(this.$store.getters.getLoginStatus);
 
                         //role based login for the users
 
@@ -148,11 +150,14 @@ export default {
                 });
 
             } catch (error) {
-                console.log(userData);
-                console.log(error);
-                // alert("User Name or Password is incorrect");
+                // console.log(userData);
+                // console.log(error);
+                alert("User Name or Password is incorrect");
             }
         },
+        forgotPassword() {
+            this.$router.push({ name: 'forgot-password' });
+        }
     },
 };
 </script>

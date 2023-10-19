@@ -16,7 +16,7 @@
   
 <script>
 import RONavBar from '../common/Dashboard-RONavBar.vue';
-import FooterDefault from '../common/Footer-Default.vue';
+import FooterDefault from "../common/Footer-Default.vue";
 
 export default {
     name: "Dashboard-ResOwner",
@@ -24,24 +24,8 @@ export default {
         RONavBar,
         FooterDefault,
     },
-    beforeRouteLeave(to, from, next) {
-        // Check if the user should be allowed to leave this route
-        if (1) {
-            // Show a confirmation dialog to confirm leaving
-            const confirmLeave = window.confirm("Are you sure you want to leave the dashboard?");
 
-            if (confirmLeave) {
-                // If confirmed, allow navigation
-                next();
-            } else {
-                // If not confirmed, prevent navigation
-                next(false);
-            }
-        } else {
-            // If the condition is not met, allow navigation
-            next();
-        }
-    },
+    
 };
 </script>
   

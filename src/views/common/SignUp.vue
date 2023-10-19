@@ -165,8 +165,9 @@ export default {
           roleId: this.role === 'Form Owner' ? 1 : 2,
         }
         //send user data to backend 
-        console.log(userData);
+        // console.log(userData);
         this.signup(userData);
+        this.$store.commit('setFirstReg', true);
 
         if (userData.roleId === 1) {
           // console.log(response)

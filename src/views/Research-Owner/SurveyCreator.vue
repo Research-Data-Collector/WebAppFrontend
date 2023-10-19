@@ -91,13 +91,14 @@
     </div>
     <v-btn type="button" class="submit-button" @click.prevent="saveSurvey">Save Survey</v-btn>
     <v-btn v-if="false" @click="toggleResponses" type="button" class="submit-button">Toggle</v-btn>
-    <p v-if="true">{{ questions }}</p>
+    <!-- <p v-if="true">{{ questions }}</p> -->
 </template>
 
 
 
 
 <script>
+//connect survey element
 export default {
     name: 'SurveyCreator',
     data() {

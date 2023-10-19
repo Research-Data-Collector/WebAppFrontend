@@ -7,16 +7,9 @@
           <h1>Join Researches</h1>
           <!-- Integrate a search -->
           <v-menu>
-
             <template v-slot:activator>
               <v-select v-model="selectedItem" :items="dropdownItems" label="Search by" style="width: 200px"></v-select>
             </template>
-
-            <v-list>
-              <v-list-item v-for="item in dropdownItems" :key="item" @click="selectItem(item)">
-                <v-list-item-title>{{ item }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
           </v-menu>
         </div>
       </v-container>
@@ -32,63 +25,38 @@
       <v-container fluid>
         <div id="search-results-table">
           <!-- Integrate a search results table -->
-          <v-table>
-            <!-- Table Header -->
-            <thead>
-              <tr>
-                <th class="text-center">Research ID</th>
-                <th class="text-center">Research Owner</th>
-                <th class="text-center">Research Title</th>
-                <th class="text-center">Description</th>
-                <th class="text-center">Action</th>
-              </tr>
-            </thead>
-            <!-- Table Body -->
-            <tbody>
-              <!-- Table Row 1 -->
-              <tr>
-                <td>1</td>
-                <td>John Doe</td>
-                <td>Research Project 1</td>
-                <td>A research project description goes here.</td>
-                <td>
-                  <v-btn color="primary" @click="joinResearch(1)">Join</v-btn>
-                </td>
-              </tr>
-              <!-- Table Row 2 -->
-              <tr>
-                <td>2</td>
-                <td>Jane Smith</td>
-                <td>Research Project 2</td>
-                <td>Another research project description.</td>
-                <td>
-                  <v-btn color="primary" @click="joinResearch(2)">Join</v-btn>
-                </td>
-              </tr>
-              <!-- Add more rows as needed -->
-              
-              <tr>
-                <td>1</td>
-                <td>John Doe</td>
-                <td>Research Project 1</td>
-                <td>A research project description goes here..</td>
-                <td>
-                  <v-btn color="primary" @click="joinResearch(1)">Join</v-btn>
-                </td>
-              </tr>
-              
-              <tr>
-                <td>1</td>
-                <td>John Doe</td>
-                <td>Research Project 1</td>
-                <td>A research project description goes here.</td>
-                <td>
-                  <v-btn color="primary" @click="joinResearch(1)">Join</v-btn>
-                </td>
-              </tr>
-            
-            </tbody>
-          </v-table>
+          <v-toolbar title="Published Researches"></v-toolbar>
+
+            <v-table fixed-header height="160px" style="padding-bottom:20px">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Form ID
+                        </th>
+                        <th class="text-center">
+                            Form Title
+                        </th>
+                        <th class="text-center">
+                            Form Owner
+                        </th>
+                        <th class="text-center">
+                            Description
+                        </th>
+                        <th class="text-center">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(i, index) in searchResults" :key="i.id">
+                        <td>{{ i.id }}</td>
+                        <td>{{ i.title }}</td>
+                        <td>{{ i.researchOwner }}</td>
+                        <td>{{ i.description }}</td>
+                        <td><v-btn color="primary" @click="joinRequest(index)"> Join Research </v-btn></td>
+                    </tr>
+                </tbody>
+            </v-table>
         </div>
       </v-container>
 
@@ -101,12 +69,15 @@ export default {
   data() {
     return {
       selectedItem: '',
+      navigateItem: '',
       dropdownItems: [
         'Research Title',
-        'Research ID',
-        'Researcher Name',
+        'Organization Name',
         '',
       ],
+
+      searchResults: [ ], //store search results.
+    
 
 
     }
@@ -114,7 +85,8 @@ export default {
 
   methods: {
     selectItem(item) {
-      this.selectedItem = item;
+      this.navigateItem = item;
+      alert('Selected item:', this.navigateItem);
     },
 
     search() {

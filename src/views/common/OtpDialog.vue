@@ -22,9 +22,9 @@
                                 <v-btn color="blue-darken-1" variant="text" type="submit">
                                     Submit
                                 </v-btn>
-                                <v-btn color="red-darken-1" variant="text" @click="dialog = false">
+                                <!-- <v-btn color="red-darken-1" variant="text" @click="back">
                                     Cancel
-                                </v-btn>
+                                </v-btn> -->
                             </v-card-actions>
                         </v-container>
                     </v-form>
@@ -54,13 +54,24 @@ export default {
 
         async sendOTP(payload) {
             const postData = payload;
-            const response = await axios.post(`${server.baseURL}/auth/verify`, postData).then((response) => {
-                console.log(postData);
-                this.$router.push({ name: 'login' });
-            }).catch((error) => {
+                if ((this.$store.getters.getFirstReg)) {
+                    const response = await axios.post(`${server.baseURL}/auth/verify`, postData).then((response) => {
+                // console.log(postData);
+                    this.$router.push({ name: 'login' });
+                }).catch((error) => {
                 console.log(error);
                 alert(error.response.data.message);
             });
+                }
+                else {
+                    const response = await axios.post(`${server.baseURL}/auth/login/resetpassword/OTP`, postData).then((response) => {
+                    this.$router.push({ name: 'new-password' });
+                }).catch((error) => {
+                console.log(error);
+                alert(error.response.data.message);
+                });
+                }
+            
         },
 
         onOtpSubmit() {
@@ -76,6 +87,11 @@ export default {
                 // alert(response.data.message)
             }
         },
+
+        // back() {
+        //     console.log("Account creation terminated. You will be redirected to the Login Page.");
+        //     this.$router.push({ name: 'login' });
+        // }
 
 
     }
