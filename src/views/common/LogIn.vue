@@ -75,7 +75,7 @@
                                     </div>
                                     <v-btn type="submit" block class="mt-4 mb-0 custom-button" color="blue"
                                         variant="outlined" position="relative">Submit</v-btn>
-                                        <p>{{ this.$store.getters.getSessionData }}</p>
+                                        <!-- <p>{{ this.$store.getters.getSessionData }}</p> -->
                                 </v-form>
                             </v-sheet>
                         </div>
