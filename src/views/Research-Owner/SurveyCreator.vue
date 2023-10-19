@@ -3,9 +3,11 @@
         <h1>Custom Form Creator</h1>
 
         <form>
-            <div> 
-                <div><input type="text" v-model="formtitle" placeholder="Enter Form Title"></div>
-                <div><input type="text" v-model="formdescription" placeholder="Enter Form Description"></div>
+            <div>
+                <label>Form Title</label>
+                <div><input type="text" v-model="formtitle" ></div>
+                <label>Form Description</label>
+                <div><input type="text" v-model="formdescription" ></div>
 
             </div>
             <div v-for="(question, index) in questions" :key="index">
@@ -31,7 +33,7 @@
                         <v-btn type="button" @click="removeOption(question, optionIndex)">Remove Option</v-btn>
                         <div class="mt-4"></div>
                     </div>
-                    <div class="mt-8"></div>
+                    
                     <v-btn type="button" @click="addOption(question)">Add Option</v-btn>
                     <div class="mt-4"></div>
                     <!--<label>Response:</label>-->
@@ -52,7 +54,7 @@
                         <v-btn type="button" @click="removeOption(question, optionIndex)">Remove Option</v-btn>
                         <div class="mt-4"></div>
                     </div>
-                    <div class="mt-4"></div>
+                    
                     <v-btn type="button" @click="addOption(question)">Add Option</v-btn>
                     <div class="mt-4"></div>
                 </div>
@@ -63,20 +65,20 @@
                     <!----><input v-show="showResponses" type="date" v-model="question.response">
                 </div>
 
-                <div v-else-if="question.type === 'img'">
+                <div v-else-if="question.type === 'file'">
                     <!----><label v-show="showResponses">Response (File):</label>
                     <!----><input v-show="showResponses" type="file">
                 </div>
-
+                <!-- 
                 <div v-else-if="question.type === 'audio'">
-                    <!----><label v-show="showResponses">Response (Audio File):</label>
-                    <!----><input v-show="showResponses" type="file">
+                    <label v-show="showResponses">Response (Audio File):</label>
+                    <input v-show="showResponses" type="file">
                 </div>
 
                 <div v-else-if="question.type === 'video'">
-                    <!----><label v-show="showResponses">Response (File):</label>
-                    <!----><input v-show="showResponses" type="file">
-                </div>
+                    <label v-show="showResponses">Response (File):</label>
+                    <input v-show="showResponses" type="file">
+                </div> -->
 
 
             </div>
@@ -85,31 +87,66 @@
         <div class="mt-4"></div>
         <v-divider></v-divider>
         <div class="mt-4"></div>
-        <div class="main-question">
+        <label> Select Question Type:</label>
+
+<!-- NEW  BUTTON TOGGLE-->
+<div class="d-flex align-center flex-column bg-grey-lighten-4 pa-6">
+        <v-btn-toggle v-model="toggle" divided>
+            <v-btn @click="addQuestion('text')">
+                <v-icon>mdi-format-text</v-icon>
+                <v-tooltip activator="parent" location="top">Text Question</v-tooltip>
+            </v-btn>
+            <v-btn @click="addQuestion('multipleChoice')">
+                <v-icon>mdi-checkbox-marked</v-icon>
+                <v-tooltip activator="parent" location="top">Multiple Choice Question</v-tooltip>
+            </v-btn>
+            <v-btn @click="addQuestion('radio')">
+                <v-icon>mdi-radiobox-marked</v-icon>
+                <v-tooltip activator="parent" location="top">Radio Button</v-tooltip>
+            </v-btn>
+            <v-btn @click="addQuestion('date')">
+                <v-icon>mdi-calendar</v-icon>
+                <v-tooltip activator="parent" location="top">Date Question</v-tooltip>
+            </v-btn>
+            <v-btn @click="addQuestion('file')">
+                <v-icon>mdi-file</v-icon>
+                <v-tooltip activator="parent" location="top">File Upload Question</v-tooltip>
+            </v-btn>
+        </v-btn-toggle>
+    </div>
+
+
+
+
+        <!-- <div class="main-question">
             <label> Select Question Type:</label>
             <select v-model="selectedType">
                 <option value="text">Text</option>
                 <option value="multipleChoice">Multiple Choice</option>
                 <option value="radio">Radio Button</option>
                 <option value="date">Date</option>
-                <option value="img">Image</option>
+                <option value="file">File</option> -->
+
+        <!-- <option value="img">Image</option>
                 <option value="audio">Audio</option>
-                <option value="video">Video</option>
+                <option value="video">Video</option> -->
 
-                <!-- <option value="multipleSelect">Multiple Select</option> -->
-            </select>
+        <!-- <option value="multipleSelect">Multiple Select</option> -->
+        <!-- </select>
             <v-btn @click="addQuestion">Add Question</v-btn>
-            <div class="mt-4"></div>
-        </div>
-
-
+            <div class="mt-4"></div> -->
     </div>
+
+    
+
+
     <div class="mt-4"></div>
-    <v-btn type="button" class="submit-button" @click.prevent="submitForm">Save Survey</v-btn>
+    <v-btn type="button" class="submit-button" @click.prevent="submitForm">Publish Survey</v-btn>
+    <!-- Are you sure dialog -->
     <div class="mt-4"></div>
 
     <v-btn v-if="false" @click="toggleResponses" type="button" class="submit-button">Toggle</v-btn>
-    <p v-if="true">{{ questions }}</p>
+    <p v-if="false">{{ questions }}</p>
 </template>
 
 
@@ -123,36 +160,36 @@ export default {
     name: 'SurveyCreator',
     data() {
         return {
-            selectedType: 'text',
+            //selectedType: 'text',
             formtitle: '',
             formdescription: '',
             questions: [],
-            showResponses: true,
+            showResponses: false,
 
             createdForms: []
         }
     },
 
     methods: {
-        addQuestion() {
-            if (this.selectedType === 'text') {
+        addQuestion(selectedType) {
+            if (selectedType === 'text') {
                 this.questions.push({ type: 'text', text: 'Text Question', response: '' });
-            } else if (this.selectedType === 'radio') {
+            } else if (selectedType === 'radio') {
                 this.questions.push({ type: 'radio', text: 'Radio Button Question', options: [{ text: '' }], response: '' });
-            } else if (this.selectedType === 'multipleChoice') {
+            } else if (selectedType === 'multipleChoice') {
                 this.questions.push({ type: 'multipleChoice', text: 'Multiple Choice Question', options: [{ text: '', correct: false }], response: '' });
-            } else if (this.selectedType === 'date') {
+            } else if (selectedType === 'date') {
                 this.questions.push({ type: 'date', text: 'Date Question', response: '' });
             }
-            else if (this.selectedType === 'img') {
-                this.questions.push({ type: 'img', text: 'Image Question', response: '' });
+            else if (selectedType === 'file') {
+                this.questions.push({ type: 'file', text: 'Image Question', response: '' });
             }
-            else if (this.selectedType === 'audio') {
-                this.questions.push({ type: 'audio', text: 'Audio Question', response: '' });
-            }
-            else if (this.selectedType === 'video') {
-                this.questions.push({ type: 'video', text: 'Video Question', response: '' });
-            }
+            // else if (this.selectedType === 'audio') {
+            //     this.questions.push({ type: 'audio', text: 'Audio Question', response: '' });
+            // }
+            // else if (this.selectedType === 'video') {
+            //     this.questions.push({ type: 'video', text: 'Video Question', response: '' });
+            // }
         },
         removeQuestion(index) {
             this.questions.splice(index, 1);
@@ -182,7 +219,8 @@ export default {
                 orgId: 2,//nneed to be computed from user Id -> orgId
                 title: this.formtitle,
                 //description: this.formdescription,
-                data: this.questions}
+                data: this.questions
+            }
             const data = JSON.stringify(jsonData);
 
             console.log(data);
@@ -190,9 +228,9 @@ export default {
             // Send the JSON data to the backend (e.g., using Axios)
             this.sendDataToBackend(data);
         },
-       
+
         async sendDataToBackend(jsonData) {
-            try{
+            try {
                 const response = await axios.post(`${server.baseURL}/admin/uploadform`, jsonData, {
                     headers: {
                         'Content-Type': 'application/json'  //not sure if this is needed
@@ -200,11 +238,11 @@ export default {
                 });
                 console.log('Data sent successfully!');
                 console.log(response);
-            }catch(error){
+            } catch (error) {
                 console.log(error);
             }
         }
-    
+
     }
 }
 

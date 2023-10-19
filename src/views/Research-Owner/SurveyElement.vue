@@ -96,23 +96,13 @@
                                             <!----><input v-show="showResponses" type="date" v-model="question.response">
                                         </div>
 
-                                        <!-- Image Question -->
-                                        <div v-else-if="question.type === 'img'">
+                                        <!-- File Question -->
+                                        <div v-else-if="question.type === 'file'">
                                             <!----><label v-show="showResponses">Response (File):</label>
                                             <!----><input v-show="showResponses" type="file">
                                         </div>
 
-                                        <!-- Audio Question -->
-                                        <div v-else-if="question.type === 'audio'">
-                                            <!----><label v-show="showResponses">Response (Audio File):</label>
-                                            <!----><input v-show="showResponses" type="file">
-                                        </div>
-
-                                        <!-- Video Question -->
-                                        <div v-else-if="question.type === 'video'">
-                                            <!----><label v-show="showResponses">Response (File):</label>
-                                            <!----><input v-show="showResponses" type="file">
-                                        </div>
+                                       
                                     </div>
                                 </form>
                             </div>
