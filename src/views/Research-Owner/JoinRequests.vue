@@ -36,7 +36,7 @@
                         <td>{{ i.title }}</td>
                         <!-- <td><v-btn v-show="i.reqs.length > 0" @click="showRequests(index)">View Join Requests ({{
                             i.reqs.length }})</v-btn></td> -->
-                        <td><v-btn  @click="showRequests(index)">View Join Requests</v-btn></td>
+                        <td><v-btn  @click="showRequests(i.id)">View Join Requests</v-btn></td>
                     </tr>
                 </tbody>
             </v-table>
@@ -47,23 +47,23 @@
             <v-container fluid>
                 <v-row>
                     <v-col v-for="i in selectedReqs" :key="i.uid" cols="12" sm="6" md="4" lg="3">
-                        <v-card v-if="i.showCard" class="mx-auto" max-width="344">
+                        <v-card  class="mx-auto" max-width="344">
                             <v-card-item>
                                 <div>
                                     <v-avatar color="purple" size="x-large">
-                                        <span class="text-h5">{{ i.name[0] }}</span>
+                                        <span class="text-h5">{{ i.fname[0]}}</span>
                                     </v-avatar>
                                     <div class="text-overline mb-1">
 
                                     </div>
                                     <div class="text-h6 mb-1">
-                                        {{ i.name }}
+                                        {{ i.fname + " "+i.lname }}
                                     </div>
                                     <!-- <div class="text-caption">Data Collector.ID {{ i.uid }}. See Profile.</div> -->
                                     <div>
                                         Data Collector
                                         <br>
-                                        Requested to join on: {{ i.date }}
+                                        Requested to join on: {{ i.createdAt.slice(0, 10)}}
 
                                     </div>
                                 </div>
@@ -113,7 +113,7 @@ export default {
         //const org = JSON.stringify({ orgId: 2 })//this.$route.params.orgId);
         const email = { email: this.$store.getters.getSessionData.user.email }
         this.getforms(email);
-        console.log(email);
+        this.getrequests(email);
     },
 
     data() {
@@ -121,28 +121,30 @@ export default {
             //         snackbar: false,
             //   alertMessage: "Accepted JOin Requested successfully!",
 
-
+            showMessage: false,
             //Snakbar
             snackbar: false,
             text: "Accepted Join Requested successfully!",
             timeout: 3000,
 
             createdForms: [],
-            selectedTitle: '',
+            formRequests:[],
+            selectedTitle: '', //
             selectedReqs: [],
-            submissions: [
-                { id: 24, title: 'Form 2', newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
-                { id: 25, title: 'Form 3',newreqs: false, reqs: [] },
-                { id: 26, title: 'Form 4', newreqs: true,reqs: [{ uid: 237, name: "Pam Murphy" }, { uid: 238, name: "Ronda James" }, { uid: 233, name: "Mark Green" }] },
-                { id: 27, title: 'Form 5', newreqs: true,reqs: [{ uid: 231, name: "John Doe" }, { uid: 232, name: "Jane Turner" }, { uid: 233, name: "Mark Green" }, { uid: 234, name: "Sam Brown" }] },
-                { id: 28, title: 'Form 6',newreqs: false, reqs: [] },
-                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
-                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
-                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "John de Gone", showCard: true, date: "2023-10-22" }] },
-                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "John de Gone", showCard: true, date: "2023-10-22" }] },
+            // submissions: [
+            //     { id: 24, title: 'Form 2', newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
+            //     { id: 25, title: 'Form 3',newreqs: false, reqs: [] },
+            //     { id: 26, title: 'Form 4', newreqs: true,reqs: [{ uid: 237, name: "Pam Murphy" }, { uid: 238, name: "Ronda James" }, { uid: 233, name: "Mark Green" }] },
+            //     { id: 27, title: 'Form 5', newreqs: true,reqs: [{ uid: 231, name: "John Doe" }, { uid: 232, name: "Jane Turner" }, { uid: 233, name: "Mark Green" }, { uid: 234, name: "Sam Brown" }] },
+            //     { id: 28, title: 'Form 6',newreqs: false, reqs: [] },
+            //     { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
+            //     { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
+            //     { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "John de Gone", showCard: true, date: "2023-10-22" }] },
+            //     { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "John de Gone", showCard: true, date: "2023-10-22" }] },
             
-            ]
-            ,
+            // ],
+            
+            
         }
     },
 
@@ -174,11 +176,43 @@ export default {
             }
         },
 
+        async getrequests(data) {
+            //get the list of forms and therir requests
 
-        showRequests(index) {
+            try {
+                console.log('Calling api...');
+                const response = await axios.post(`${server.baseURL}/admin/getrequests`, data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'  //not sure if this is needed
+                        }
+                    }
+                );
+                console.log('Called api successfully!');
+                console.log(response);
 
-            this.selectedReqs = this.submissions[index].reqs;
-            this.selectedTitle = this.submissions[index].title;
+                this.formRequests = response.data;
+                
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+
+
+        showRequests(formID) {
+            
+            this.formRequests.forEach((item) => {
+                if (item.formId == formID) {
+                    this.selectedReqs = item.request;
+                    console.log(this.selectedReqs);
+                   
+                }
+            })
+            
+
+            //this.selectedReqs = this.submissions[index].reqs;
+            //this.selectedTitle = this.submissions[index].title;
         },
 
         //Regarding Search
