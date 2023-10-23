@@ -148,6 +148,7 @@ export default {
 
     methods: {
         acceptCard(item) {
+            
             // Set showCard to false to hide the card when "Accept" is clicked
             item.showCard = false;
             this.snackbar = true;

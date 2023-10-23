@@ -20,43 +20,15 @@
                 <v-btn type="button" @click="removeQuestion(index)">Remove Question</v-btn>
                 <div class="mt-4"></div>
 
-                <!--<div v-if="question.type === 'text'">-->
-                <!--<label>Response:</label>-->
-                <!-- <input v-show="showResponses" type="text" v-model="question.value">
-                </div>-->
-
-                <!-- <div v-else-if="question.type === 'multipleChoice'">
-                    <label>Options:</label>
-                    <div class="options" v-for="(option, optionIndex) in question.options" :key="optionIndex">
-                        <div class="mt-4"></div>
-                        <input type="text" v-model="option.text"> -->
-                <!-- <input v-show="showResponses" type="checkbox" v-model="option.correct"> -->
-                <!-- <div class="mt-4"></div>
-                        <v-btn type="button" @click="removeOption(question, optionIndex)">Remove Option</v-btn>
-                        <div class="mt-4"></div>
-                    </div>
-                    
-                    <v-btn type="button" @click="addOption(question)">Add Option</v-btn>
-                    <div class="mt-4"></div> -->
-                <!--<label>Response:</label>-->
-                <!-- <select v-show="showResponses" v-model="question.response">
-                        <option v-for="(option, optionIndex) in question.options" :key="optionIndex" :value="option.text">{{
-                            option.text }}</option>
-                    </select>
-                </div> -->
+                <!-- DROPDOWN - EXTRA OPTIONS -->
                 <div v-if="question.type === 'dropdown'">
                     <label>Options:</label>
                     <div class="options" v-for="(option, optionIndex) in question.data" :key="optionIndex">
                         <input type="text" :value="option"
                             @input="updateOption(question, optionIndex, $event.target.value)">
-                        <!-- <input type="text" v-model="option"> -->
-                        <!-- <input v-show="showResponses" type="radio" :id="`q${index}_o${optionIndex}`"
-                            :value="option.text" v-model="question.response" :name="`q${index}`"> -->
-                        <!-- <label v-show="showResponses" :for="`q${index}_o${optionIndex}`">{{ option }}</label> -->
                         <v-btn type="button" @click="removeOption(question, optionIndex)">Remove Option</v-btn>
                         <div class="mt-4"></div>
                     </div>
-
 
                     <div style="padding-left: 50px;">
                         <v-btn type="button" @click="addOption(question)">Add Option</v-btn>
@@ -65,15 +37,12 @@
                 </div>
 
 
+                <!-- RADIO - EXTRA OPTIONS (same as dropdown) -->
                 <div v-if="question.type === 'radio'">
                     <label>Options:</label>
                     <div class="options" v-for="(option, optionIndex) in question.data" :key="optionIndex">
                         <input type="text" :value="option"
                             @input="updateOption(question, optionIndex, $event.target.value)">
-                        <!-- <input type="text" v-model="option"> -->
-                        <!-- <input v-show="showResponses" type="radio" :id="`q${index}_o${optionIndex}`"
-                            :value="option.text" v-model="question.response" :name="`q${index}`"> -->
-                        <!-- <label v-show="showResponses" :for="`q${index}_o${optionIndex}`">{{ option }}</label> -->
                         <v-btn type="button" @click="removeOption(question, optionIndex)">Remove Option</v-btn>
                         <div class="mt-4"></div>
                     </div>
@@ -83,34 +52,6 @@
                     </div>
 
                 </div>
-
-
-
-
-
-
-
-                <div v-else-if="question.type === 'date'">
-                    <!-- <label v-show="showResponses">Response (Date):</label> -->
-                    <!-- <input v-show="showResponses" type="date" v-model="question.response"> -->
-                </div>
-
-                <div v-else-if="question.type === 'file'">
-                    <!-- <label v-show="showResponses">Response (File):</label> -->
-                    <!-- <input v-show="showResponses" type="file"> -->
-                </div>
-                <!-- 
-                <div v-else-if="question.type === 'audio'">
-                    <label v-show="showResponses">Response (Audio File):</label>
-                    <input v-show="showResponses" type="file">
-                </div>
-
-                <div v-else-if="question.type === 'video'">
-                    <label v-show="showResponses">Response (File):</label>
-                    <input v-show="showResponses" type="file">
-                </div> -->
-
-
             </div>
 
         </form>
@@ -145,32 +86,11 @@
                 </v-btn>
             </v-btn-toggle>
         </div>
-
-
-
-
-        <!-- <div class="main-question">
-            <label> Select Question Type:</label>
-            <select v-model="selectedType">
-                <option value="text">Text</option>
-                <option value="multipleChoice">Multiple Choice</option>
-                <option value="radio">Radio Button</option>
-                <option value="date">Date</option>
-                <option value="file">File</option> -->
-
-        <!-- <option value="img">Image</option>
-                <option value="audio">Audio</option>
-                <option value="video">Video</option> -->
-
-        <!-- <option value="multipleSelect">Multiple Select</option> -->
-        <!-- </select>
-            <v-btn @click="addQuestion">Add Question</v-btn>
-            <div class="mt-4"></div> -->
     </div>
 
 
 
-
+    <!-- PUBLISH FORM -->
     <div class="mt-4"></div>
     <v-btn type="button" class="submit-button" @click.prevent="submitForm">Publish Form</v-btn>
 
@@ -186,18 +106,15 @@
             </v-btn>
         </template>
     </v-snackbar>
-
     <!-- Are you sure dialog -->
     <div class="mt-4"></div>
 
-    <!-- <v-btn v-if="false" @click="toggleResponses" type="button" class="submit-button">Toggle</v-btn>
-    <p v-if="true">{{ questions }}</p> -->
+<!-- To VIEW Questions Array -->
+    <!-- <p v-if="true">{{ questions }}</p>
+    <div class="mt-8"></div>
+    <v-btn type="button" class="submit-button" >Button</v-btn>
+    <div class="mt-4"></div> -->
 
-
-    <!-- <div class="mt-8"></div>
-    <v-btn type="button" class="submit-button" @click.prevent="submitForm">Publish Survey</v-btn> -->
-    <!-- Are you sure dialog -->
-    <!-- <div class="mt-4"></div> -->
 </template>
 
 
@@ -217,11 +134,9 @@ export default {
             timeout: 3000,
 
 
-            //selectedType: 'text',
             formtitle: '',
             formdescription: '',
             questions: [],
-            showResponses: false,
 
             createdForms: []
         }
@@ -229,25 +144,26 @@ export default {
 
     methods: {
         addQuestion(selectedType) {
+            const q_id = this.questions.length
             if (selectedType === 'text') {
-                this.questions.push({ id: '1', label: 'text field', type: 'text', data: [], value: '' });
+                this.questions.push({ id: q_id, label: 'text field', type: 'text', data: [], value: '' });
             }
             else if (selectedType === 'number') {
-                this.questions.push({ id: '2', label: 'number field', type: 'number', data: [], value: '' });
+                this.questions.push({ id: q_id, label: 'number field', type: 'number', data: [], value: '' });
             }
             else if (selectedType === 'dropdown') {
-                this.questions.push({ id: '3', label: 'dropdown fields', type: 'dropdown', data: [], value: '' });
+                this.questions.push({ id: q_id, label: 'dropdown fields', type: 'dropdown', data: [], value: '' });
 
             } else if (selectedType === 'radio') {
-                this.questions.push({ id: '4', label: 'radio fields', type: 'radio', data: [], value: '' });
-                //this.questions.push({ type: 'radio', text: 'Radio Button Question', options: [{ text: '' }], response: '' });
+                this.questions.push({ id: q_id, label: 'radio fields', type: 'radio', data: [], value: '' });
+
                 // } else if (selectedType === 'multipleChoice') {
                 //     this.questions.push({ type: 'multipleChoice', text: 'Multiple Choice Question', options: [{ text: '', correct: false }], response: '' });
                 // } else if (selectedType === 'date') {
                 //     this.questions.push({ type: 'date', text: 'Date Question', response: '' });
             }
             else if (selectedType === 'file') {
-                this.questions.push({ id: '5', label: 'file fields', type: 'file', data: [], value: '' });
+                this.questions.push({ id: q_id, label: 'file fields', type: 'file', data: [], value: '' });
                 //this.questions.push({ type: 'file', text: 'Image Question', response: '' });
             }
             // else if (this.selectedType === 'audio') {
@@ -272,28 +188,20 @@ export default {
             question.data[optionIndex] = newValue;
         },
 
-        // saveSurvey() {
-        //     //handle the form submission here, e.g., send responses to a server
-        //     this.createdForms.push({ title: this.formtitle, description: this.formdescription, questions: this.questions });
-        //     this.questions = [];
-        // },
-
-
-        toggleResponses() {
-            this.showResponses = !this.showResponses;
-
-        },
-        //To be able to Drag Questions so that they can be rearranged
 
         submitForm() {
+            // Reassign IDs in questions to maintain uniqueness and order
+            this.questions.forEach((question, i) => {
+                question.id = String(i + 1);
+            });
+
+
             try {
                 const jsonData = {
                     title: this.formtitle,
                     fields: this.questions
                 }
 
-                //const data = JSON.stringify(jsonData);
-                //console.log(data);
                 const email = this.$store.getters.getSessionData.user.email
                 const datapacket = {
                     title: this.formtitle,
@@ -303,35 +211,14 @@ export default {
                 }
                 console.log(datapacket);
                 //Send the JSON data to the backend (e.g., using Axios)
-
-                this.snackbar = true;
-
-                //this.sendDataToBackend(datapacket);                  / /////////////////////CHANGEEEEEEE
+                this.sendDataToBackend(datapacket);
 
 
             } catch (error) {
                 console.log(error);
 
             }
-            //console.log(this.$store.getters.getSessionData.user.email)
 
-            // datapacket = {
-            //     title: this.formtitle,
-            //     data: data,
-            //     email: this.$store.getters.getSessionData.user.email,
-            //     description: this.formdescription
-            // }
-            // console.log(datapacket);
-
-            // Send the JSON data to the backend (e.g., using Axios)
-            //this.sendDataToBackend(data);
-
-
-
-            //         title: string;
-            // data:JsonValue;
-            // email:string;
-            // description:string;
         },
 
         async sendDataToBackend(jsonData) {
@@ -343,6 +230,9 @@ export default {
                 });
                 console.log('Data sent successfully!');
                 console.log(response);
+                //Show Alert if Success
+                this.snackbar = true;
+
             } catch (error) {
                 console.log(error);
             }
@@ -395,6 +285,7 @@ label {
 
 select,
 input[type="text"],
+input[type="number"],
 input[type="date"] {
     width: 100%;
     padding: 10px;

@@ -37,34 +37,34 @@
                         <v-container fluid>
                             <div class="survey"> <!--  style="height: 300px;" -->
                                 <form>
-                                    <div v-for="(question, index) in form.data" :key="index">
+                                    <div v-for="(question, index) in form.data.fields" :key="index">
+                                        <br>
                                         <label>{{ index + 1 + ') ' }}Question:</label>
-                                        <label>{{ question.text }}</label>
+                                        <label>{{ question.label }}</label>
 
                                         <!-- Text Question -->
                                         <div v-if="question.type === 'text'">
-                                            <label>Response:</label>
+                                            <!-- <label>Response:</label> -->
                                             <!----> <input v-show="showResponses" type="text" v-model="question.value">
                                         </div>
-                                        <!-- multiple Choice Question -->
-                                        <div v-else-if="question.type === 'multipleChoice'">
+
+                                         <!-- Number Question -->
+                                         <div v-if="question.type === 'number'">
+                                            <!-- <label>Response:</label> -->
+                                            <input v-show="showResponses" type="number" v-model="question.value">
+                                        </div>
+
+
+                                        <!-- Dropdown Question -->
+                                        <div v-else-if="question.type === 'dropdown'">
                                             <label>Options:</label>
-
-                                            <div class="options" v-for="(option, optionIndex) in question.options"
-                                                :key="optionIndex">
-                                                <div class="mt-4"></div>
-                                                <!----><input v-show="showResponses" type="checkbox"
-                                                    v-model="option.correct">
-                                                <label>{{ " " + option.text }}</label>
-                                            </div>
-
-                                            <label>Response:</label>
-                                            <!----> <select v-show="showResponses" v-model="question.response">
-                                                <option v-for="(option, optionIndex) in question.options" :key="optionIndex"
-                                                    :value="option.text">{{
-                                                        option.text }}</option>
+                                            <select v-show="showResponses" v-model="question.value">
+                                                <option v-for="(option, optionIndex) in question.data" :key="optionIndex"
+                                                    :value="option">{{
+                                                        option }}</option>
                                             </select>
                                         </div>
+
                                         <!-- Radio Button Question -->
                                         <div v-else-if="question.type === 'radio'">
                                             <label>Options:</label>
@@ -72,28 +72,47 @@
                                                 :key="optionIndex">
                                                 <!----><input v-show="showResponses" type="radio"
                                                     :id="`q${index}_o${optionIndex}`" :value="option.text"
-                                                    v-model="question.response" :name="`q${index}`">
+                                                    v-model="question.value" :name="`q${index}`">
                                                 <!----><label v-show="showResponses" :for="`q${index}_o${optionIndex}`">
-                                                {{ "" + option.text }}</label>
+                                                {{ " " + option }}</label>
                                             </div>
-                                            <label>Response:</label>
-                                            <!----> <select v-show="showResponses" v-model="question.response">
-                                                <option v-for="(option, optionIndex) in question.data" :key="optionIndex"
-                                                    :value="option">{{
-                                                        option.text }}</option>
-                                            </select>
+                                            <!-- <label>Response:</label> -->
+                                        
                                         </div>
-                                        <!-- Date Question -->
-                                        <div v-else-if="question.type === 'number'">
-                                            <!----><label v-show="showResponses">Response (Number):</label>
-                                            <!----><input v-show="showResponses" type="date" v-model="question.value">
-                                        </div>
+                                       
                                         <!-- File Question -->
                                         <div v-else-if="question.type === 'file'">
-                                            <!----><label v-show="showResponses">Response (File):</label>
+                                            <!-- <label v-show="showResponses">Response (File):</label> -->
                                             <!----><input v-show="showResponses" type="file">
                                         </div>
                                        
+
+
+                                        <!-- multiple Choice Question -->
+                                        <!-- <div v-else-if="question.type === 'multipleChoice'">
+                                            <label>Options:</label>
+
+                                            <div class="options" v-for="(option, optionIndex) in question.options"
+                                                :key="optionIndex">
+                                                <div class="mt-4"></div>
+                                               <input v-show="showResponses" type="checkbox"
+                                                    v-model="option.correct">
+                                                <label>{{ " " + option.text }}</label>
+                                            </div>
+
+                                            <label>Response:</label>
+                                             <select v-show="showResponses" v-model="question.response">
+                                                <option v-for="(option, optionIndex) in question.options" :key="optionIndex"
+                                                    :value="option.text">{{
+                                                        option.text }}</option>
+                                            </select>
+                                        </div> -->
+
+                                         <!-- Date Question -->
+                                         <!-- <div v-else-if="question.type === 'number'">
+                                            <label v-show="showResponses">Response (Number):</label>
+                                            <input v-show="showResponses" type="date" v-model="question.value">
+                                        </div> -->
                                     </div>
                                 </form>
                             </div>
@@ -168,6 +187,7 @@ label {
 
 select,
 input[type="text"],
+input[type="number"],
 input[type="date"] {
     width: 100%;
     padding: 10px;
@@ -179,6 +199,7 @@ input[type="date"] {
 select {
     background-color: #f1f4fe;
 }
+
 
 .options {
     margin-top: 5px;

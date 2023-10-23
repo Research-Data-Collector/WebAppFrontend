@@ -120,6 +120,7 @@ label {
 
 select,
 input[type="text"],
+input[type="number"],
 input[type="date"] {
     width: 100%;
     padding: 10px;
