@@ -33,7 +33,7 @@
     
     </v-toolbar>
        
-        <v-table fixed-header height="160px">
+        <v-table fixed-header height="368px">
         <thead>
             <tr>
                 <th class="text-center">
@@ -48,10 +48,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(i, index) in submissions" :key="i.id">
+            <tr v-for="(i, index) in createdForms" :key="i.id">
                 <td>{{ i.id }}</td>
                 <td>{{  i.title  }}</td>
-                <td><v-btn  @click="showSubmissions(index)" >Show Submissions</v-btn></td>
+                <td><v-btn  @click="showSubmissions(index, i.title)" >Show Submissions</v-btn></td>
             </tr>
         </tbody>
     </v-table>
@@ -95,12 +95,22 @@
 </div>
 </template>
 <script>
+import axios from "axios";
+import { server } from "../../helper";
 
 export default {
     name: 'PublishedForms',
+    mounted() {
+        //const org = JSON.stringify({ orgId: 2 })//this.$route.params.orgId);
+        const email = {email: this.$store.getters.getSessionData.user.email}
+        this.getforms(email);
+        console.log(email);
+    },
+
     data() {
         return {
             //related to search
+            createdForms : [],
             loaded: false,
       loading: false,
       searchQuery: "",
@@ -331,6 +341,100 @@ export default {
     sby: "Olivia Lee",
     dat: "04.02.2023",
     tim: "11:10"
+  }]},
+  { id: { id: 28, title: 'Form 7', subs: [{
+    sid: 25,
+    sby: "Sophia Martinez",
+    dat: "25.01.2023",
+    tim: "14:00"
+  },
+  {
+    sid: 26,
+    sby: "Jackson Wilson",
+    dat: "26.01.2023",
+    tim: "21:35"
+  }]}}
+  ,
+  { id: { id: 28, title: 'Form 8', subs: [{
+    sid: 25,
+    sby: "Sophia Martinez",
+    dat: "25.01.2023",
+    tim: "14:00"
+  },
+  {
+    sid: 26,
+    sby: "Jackson Wilson",
+    dat: "26.01.2023",
+    tim: "21:35"
+  }]}}
+  ,
+
+
+  { id: 28, title: 'Form 9', subs: [{
+    sid: 25,
+    sby: "Sophia Martinez",
+    dat: "25.01.2023",
+    tim: "14:00"
+  },
+  {
+    sid: 26,
+    sby: "Jackson Wilson",
+    dat: "26.01.2023",
+    tim: "21:35"
+  },
+  {
+    sid: 27,
+    sby: "Emma Johnson",
+    dat: "27.01.2023",
+    tim: "12:20"
+  },
+  {
+    sid: 28,
+    sby: "Aiden Lee",
+    dat: "28.01.2023",
+    tim: "16:45"
+  },
+  {
+    sid: 29,
+    sby: "Olivia Davis",
+    dat: "29.01.2023",
+    tim: "09:30"
+  },
+  {
+    sid: 30,
+    sby: "Mason Brown",
+    dat: "30.01.2023",
+    tim: "13:55"
+  },
+  {
+    sid: 31,
+    sby: "Charlotte Smith",
+    dat: "31.01.2023",
+    tim: "18:05"
+  },
+  {
+    sid: 32,
+    sby: "Elijah Johnson",
+    dat: "01.02.2023",
+    tim: "10:50"
+  },
+  {
+    sid: 33,
+    sby: "Ava Wilson",
+    dat: "02.02.2023",
+    tim: "15:15"
+  },
+  {
+    sid: 34,
+    sby: "William Davis",
+    dat: "03.02.2023",
+    tim: "22:30"
+  },
+  {
+    sid: 35,
+    sby: "Olivia Lee",
+    dat: "04.02.2023",
+    tim: "11:10"
   }] }
             ],
             selectedTitle: '',
@@ -342,11 +446,31 @@ export default {
         };
     },
     methods: {
+      async getforms(data) {
+            //get the list of Json forms from a get request
 
-        showSubmissions(index) {
+            try {
+                console.log('Calling api...');
+                const response = await axios.post(`${server.baseURL}/admin/getOrgforms`, data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'  //not sure if this is needed
+                        }
+                    }
+                );
+                console.log('Called api successfully!');
+                console.log(response);
+
+                this.createdForms = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        showSubmissions(index, title) {
 
             this.selectedSubs = this.submissions[index].subs;
-            this.selectedTitle = this.submissions[index].title;
+            this.selectedTitle = title;
 
         },
 

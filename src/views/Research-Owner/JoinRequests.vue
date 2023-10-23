@@ -16,7 +16,7 @@
 
             </v-toolbar>
 
-            <v-table fixed-header height="160px" style="padding-bottom:20px">
+            <v-table fixed-header height="368px" style="padding-bottom:20px">
                 <thead>
                     <tr>
                         <th class="text-center">
@@ -31,11 +31,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(i, index) in submissions" :key="i.id">
+                    <tr v-for="(i, index) in createdForms" :key="i.id">
                         <td>{{ i.id }}</td>
                         <td>{{ i.title }}</td>
-                        <td><v-btn v-show="i.reqs.length > 0" @click="showRequests(index)">View Join Requests ({{
-                            i.reqs.length }})</v-btn></td>
+                        <!-- <td><v-btn v-show="i.reqs.length > 0" @click="showRequests(index)">View Join Requests ({{
+                            i.reqs.length }})</v-btn></td> -->
+                        <td><v-btn  @click="showRequests(index)">View Join Requests</v-btn></td>
                     </tr>
                 </tbody>
             </v-table>
@@ -46,7 +47,7 @@
             <v-container fluid>
                 <v-row>
                     <v-col v-for="i in selectedReqs" :key="i.uid" cols="12" sm="6" md="4" lg="3">
-                        <v-card class="mx-auto" max-width="344">
+                        <v-card v-if="i.showCard" class="mx-auto" max-width="344">
                             <v-card-item>
                                 <div>
                                     <v-avatar color="purple" size="x-large">
@@ -58,16 +59,36 @@
                                     <div class="text-h6 mb-1">
                                         {{ i.name }}
                                     </div>
-                                    <div class="text-caption">Data Collector.ID {{ i.uid }}. See Profile.</div>
+                                    <!-- <div class="text-caption">Data Collector.ID {{ i.uid }}. See Profile.</div> -->
+                                    <div>
+                                        Data Collector
+                                        <br>
+                                        Requested to join on: {{ i.date }}
+
+                                    </div>
                                 </div>
                             </v-card-item>
 
                             <v-card-actions>
-                                <v-btn>
+                                <v-btn variant="tonal" @click="acceptCard(i)" >
                                     Accept
                                 </v-btn>
-                                <v-btn>
-                                    Delete
+                
+                                <v-snackbar   v-model="snackbar" :timeout="timeout" color="success">
+                                    <b>
+                                        {{ text }}
+                                    </b>
+           
+
+                                    <template v-slot:actions>
+                                        <v-btn color="white" variant="text" @click="snackbar = false">
+                                            Close
+                                        </v-btn>
+                                    </template>
+                                </v-snackbar>
+
+                                <v-btn variant="tonal" @click="acceptCard(i)">
+                                    Decline
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
@@ -80,26 +101,78 @@
 </template>
 
 <script>
+import axios from "axios";
+import { server } from "../../helper";
+
 
 //ACCEPT, DELETE and viewing profile capability...
 // SEPARATE HISTORY of approvals (who's in res grp- form) Table, BUT, state management? must be synced right?
 export default {
     name: 'JoinRequests',
+    mounted() {
+        //const org = JSON.stringify({ orgId: 2 })//this.$route.params.orgId);
+        const email = { email: this.$store.getters.getSessionData.user.email }
+        this.getforms(email);
+        console.log(email);
+    },
+
     data() {
         return {
+            //         snackbar: false,
+            //   alertMessage: "Accepted JOin Requested successfully!",
+
+
+            //Snakbar
+            snackbar: false,
+            text: "Accepted Join Requested successfully!",
+            timeout: 3000,
+
+            createdForms: [],
             selectedTitle: '',
             selectedReqs: [],
             submissions: [
-                { id: 24, title: 'Form 2', reqs: [{ uid: 231, name: "John Doe" }, { uid: 232, name: "Jane Turner" }, { uid: 233, name: "Mark Green" }] },
-                { id: 25, title: 'Form 3', reqs: [] },
-                { id: 26, title: 'Form 4', reqs: [{ uid: 237, name: "Pam Murphy" }, { uid: 238, name: "Ronda James" }, { uid: 233, name: "Mark Green" }] },
-                { id: 27, title: 'Form 5', reqs: [{ uid: 231, name: "John Doe" }, { uid: 232, name: "Jane Turner" }, { uid: 233, name: "Mark Green" }, { uid: 234, name: "Sam Brown" }] },
-                { id: 28, title: 'Form 6', reqs: [] }]
+                { id: 24, title: 'Form 2', newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
+                { id: 25, title: 'Form 3',newreqs: false, reqs: [] },
+                { id: 26, title: 'Form 4', newreqs: true,reqs: [{ uid: 237, name: "Pam Murphy" }, { uid: 238, name: "Ronda James" }, { uid: 233, name: "Mark Green" }] },
+                { id: 27, title: 'Form 5', newreqs: true,reqs: [{ uid: 231, name: "John Doe" }, { uid: 232, name: "Jane Turner" }, { uid: 233, name: "Mark Green" }, { uid: 234, name: "Sam Brown" }] },
+                { id: 28, title: 'Form 6',newreqs: false, reqs: [] },
+                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
+                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "Mark Green", showCard: true, date: "2023-10-22" }] },
+                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "John de Gone", showCard: true, date: "2023-10-22" }] },
+                { id: 24, title: 'Form 2',newreqs: true, reqs: [{ uid: 231, name: "John Doe", showCard: true, date: "2023-10-22" }, { uid: 232, name: "Jane Turner", showCard: true, date: "2023-10-22" }, { uid: 233, name: "John de Gone", showCard: true, date: "2023-10-22" }] },
+            
+            ]
             ,
         }
     },
 
     methods: {
+        acceptCard(item) {
+            // Set showCard to false to hide the card when "Accept" is clicked
+            item.showCard = false;
+            this.snackbar = true;
+        },
+        async getforms(data) {
+            //get the list of Json forms from a get request
+
+            try {
+                console.log('Calling api...');
+                const response = await axios.post(`${server.baseURL}/admin/getOrgforms`, data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'  //not sure if this is needed
+                        }
+                    }
+                );
+                console.log('Called api successfully!');
+                console.log(response);
+
+                this.createdForms = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
 
         showRequests(index) {
 
