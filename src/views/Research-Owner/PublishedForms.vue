@@ -51,7 +51,7 @@
             <tr v-for="(i, index) in createdForms" :key="i.id">
                 <td>{{ i.id }}</td>
                 <td>{{  i.title  }}</td>
-                <td><v-btn  @click="showSubmissions(index, i.title)" >Show Submissions</v-btn></td>
+                <td><v-btn  @click="showSubmissions(i.id, i.title)" >Show Submissions</v-btn></td>
             </tr>
         </tbody>
     </v-table>
@@ -82,14 +82,16 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="i in selectedSubs" :key="i.id">
-                <td>{{ i.sid }}</td>
-                <td>{{  i.sby  }}</td>
-                <td>{{  i.dat  }}</td>
-                <td>{{  i.tim  }}</td>
+            <tr v-for="i in submissions" :key="i.id">
+                <td>{{ i.id }}</td>
+                <td>{{  i.userId  }}</td>
+                <td>{{ i.createdAt.slice(0, 10) }}</td>
+                <td>{{  i.createdAt.slice(11,19)  }}</td>
                    </tr>
         </tbody>
     </v-table>
+    <br>
+    <br>
         
     </div>
 </div>
@@ -115,7 +117,7 @@ export default {
       loading: false,
       searchQuery: "",
            
-            submissions: [{ id: 24, title: 'Form 2', 
+            submissionsOld: [{ id: 24, title: 'Form 2', 
             subs:[{
     sid: 1,
     sby: "John Smith",
@@ -438,8 +440,8 @@ export default {
   }] }
             ],
             selectedTitle: '',
-            selectedSubs: []//let's put dummy data for now otherwise should be a prop from the rresearch form selected
-
+            selectedSubs: [],//let's put dummy data for now otherwise should be a prop from the rresearch form selected
+            submissions: [],
 
 
 
@@ -450,7 +452,6 @@ export default {
             //get the list of Json forms from a get request
 
             try {
-                console.log('Calling api...');
                 const response = await axios.post(`${server.baseURL}/admin/getOrgforms`, data,
                     {
                         headers: {
@@ -458,19 +459,31 @@ export default {
                         }
                     }
                 );
-                console.log('Called api successfully!');
-                console.log(response);
-
                 this.createdForms = response.data;
             } catch (error) {
                 console.log(error);
             }
         },
 
-        showSubmissions(index, title) {
+        async showSubmissions(ID, title) {
 
-            this.selectedSubs = this.submissions[index].subs;
+            //this.selectedSubs = this.submissions[index].subs;
             this.selectedTitle = title;
+            //get the list of Json forms from a get request
+            const data = {formId: ID};
+
+            try {
+                const response = await axios.post(`${server.baseURL}/admin/getsubmissions`, data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'  //not sure if this is needed
+                        }
+                    }
+                );
+                this.submissions = response.data;
+            } catch (error) {
+                console.log(error);
+            }
 
         },
 
