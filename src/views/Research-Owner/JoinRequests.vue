@@ -16,7 +16,7 @@
 
             </v-toolbar>
 
-            <v-table fixed-header height="160px" style="padding-bottom:20px">
+            <v-table fixed-header height="368px" style="padding-bottom:20px">
                 <thead>
                     <tr>
                         <th class="text-center">
@@ -31,11 +31,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(i, index) in submissions" :key="i.id">
+                    <tr v-for="(i, index) in createdForms" :key="i.id">
                         <td>{{ i.id }}</td>
                         <td>{{ i.title }}</td>
-                        <td><v-btn v-show="i.reqs.length > 0" @click="showRequests(index)">View Join Requests ({{
-                            i.reqs.length }})</v-btn></td>
+                        <td><v-btn v-if="hasRequests(i.id)" @click="showRequests(i.id, i.title)">View Join Requests</v-btn>
+                        </td>
                     </tr>
                 </tbody>
             </v-table>
@@ -45,29 +45,53 @@
         <div class="container" style="padding-top: 40px;">
             <v-container fluid>
                 <v-row>
-                    <v-col v-for="i in selectedReqs" :key="i.uid" cols="12" sm="6" md="4" lg="3">
+                    <v-col cols="12">
+                        <h3>Join Requests for {{ selectedTitle }}</h3>
+
+                    </v-col>
+                    <v-col v-for="i in selectedReqs" :key="i.userId" cols="12" sm="6" md="4" lg="3">
                         <v-card class="mx-auto" max-width="344">
                             <v-card-item>
                                 <div>
                                     <v-avatar color="purple" size="x-large">
-                                        <span class="text-h5">{{ i.name[0] }}</span>
+                                        <span class="text-h5">{{ i.fname[0] }}</span>
                                     </v-avatar>
                                     <div class="text-overline mb-1">
 
                                     </div>
                                     <div class="text-h6 mb-1">
-                                        {{ i.name }}
+                                        {{ i.fname + " " + i.lname }}
                                     </div>
-                                    <div class="text-caption">Data Collector.ID {{ i.uid }}. See Profile.</div>
+                                    <!-- <div class="text-caption">Data Collector.ID {{ i.uid }}. See Profile.</div> -->
+                                    <div>
+                                        Data Collector
+                                        <br>
+                                        Requested to join on: {{ i.createdAt.slice(0, 10) }}
+
+                                    </div>
                                 </div>
                             </v-card-item>
 
                             <v-card-actions>
-                                <v-btn>
+                                <v-btn variant="tonal" @click="acceptCard(i.userId)">
                                     Accept
                                 </v-btn>
-                                <v-btn>
-                                    Delete
+
+                                <v-snackbar v-model="snackbar" :timeout="timeout" color="success">
+                                    <b>
+                                        {{ text }}
+                                    </b>
+
+
+                                    <template v-slot:actions>
+                                        <v-btn color="white" variant="text" @click="snackbar = false">
+                                            Close
+                                        </v-btn>
+                                    </template>
+                                </v-snackbar>
+
+                                <v-btn variant="tonal" @click="declineCard(i)">
+                                    Decline
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
@@ -80,31 +104,182 @@
 </template>
 
 <script>
+import axios from "axios";
+import { server } from "../../helper";
+
 
 //ACCEPT, DELETE and viewing profile capability...
 // SEPARATE HISTORY of approvals (who's in res grp- form) Table, BUT, state management? must be synced right?
 export default {
     name: 'JoinRequests',
+    mounted() {
+        //const org = JSON.stringify({ orgId: 2 })//this.$route.params.orgId);
+        const email = { email: this.$store.getters.getSessionData.user.email }
+        this.getforms(email);
+        this.getrequests(email);
+    },
+
     data() {
         return {
-            selectedTitle: '',
+            //         snackbar: false,
+            //   alertMessage: "Accepted JOin Requested successfully!",
+
+
+            showMessage: false,
+            //Snakbar
+            snackbar: false,
+            text: "Accepted Join Requested successfully!",
+            timeout: 3000,
+
+            createdForms: [],
+            formRequests: [],
+            selectedTitle: '', //
+            selectedFormId: '',
             selectedReqs: [],
-            submissions: [
-                { id: 24, title: 'Form 2', reqs: [{ uid: 231, name: "John Doe" }, { uid: 232, name: "Jane Turner" }, { uid: 233, name: "Mark Green" }] },
-                { id: 25, title: 'Form 3', reqs: [] },
-                { id: 26, title: 'Form 4', reqs: [{ uid: 237, name: "Pam Murphy" }, { uid: 238, name: "Ronda James" }, { uid: 233, name: "Mark Green" }] },
-                { id: 27, title: 'Form 5', reqs: [{ uid: 231, name: "John Doe" }, { uid: 232, name: "Jane Turner" }, { uid: 233, name: "Mark Green" }, { uid: 234, name: "Sam Brown" }] },
-                { id: 28, title: 'Form 6', reqs: [] }]
-            ,
+
+
         }
     },
 
     methods: {
+        async acceptCard(userID) {
 
-        showRequests(index) {
+            const data = {
+                userId: userID,
+                formId: this.selectedFormId,
+                status: true, //set to 1 for accpted
+            }
+            try {
+                // Send to backend
+                await this.addMemberToBackend(data);
+                //show Alert
+                this.snackbar = true;
+                //render updated list of requests
+                await this.getrequests({ email: this.$store.getters.getSessionData.user.email });
+                this.showRequests(this.selectedFormId, this.selectedTitle);
+            } catch (error) {
+                console.error(error);
+                // Handle any errors that may occur during the async operations
+            }
 
-            this.selectedReqs = this.submissions[index].reqs;
-            this.selectedTitle = this.submissions[index].title;
+        },
+        async declineCard(userID) {
+
+            const data = {
+                userId: userID,
+                formId: this.selectedFormId,
+                status: false, //set to 2 once databse is updated
+            }
+            try {
+                // Send to backend
+                await this.addMemberToBackend(data);
+                //show Alert
+                this.snackbar = true;
+                //render updated list of requests
+                await this.getrequests({ email: this.$store.getters.getSessionData.user.email });
+                this.showRequests(this.selectedFormId, this.selectedTitle);
+            } catch (error) {
+                console.error(error);
+                // Handle any errors that may occur during the async operations
+            }
+
+        },
+        async addMemberToBackend(data) {
+            try {
+                console.log('Calling api...');
+                const response = await axios.post(`${server.baseURL}/admin/addmember`, data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'  //not sure if this is needed
+                        }
+                    }
+                );
+                console.log('Called api successfully!');
+                console.log(response);
+                this.text = response.data.message;
+
+                //this.getforms()
+            } catch (error) {
+                console.log(error);
+            }
+
+        },
+
+        //mounting
+        async getforms(data) {
+            //get the list of Json forms from a get request upon mounting
+
+            try {
+                console.log('Calling api...');
+                const response = await axios.post(`${server.baseURL}/admin/getOrgforms`, data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'  //not sure if this is needed
+                        }
+                    }
+                );
+                console.log('Called api successfully!');
+                console.log(response);
+
+                this.createdForms = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async getrequests(data) {
+            //get the list of forms and their requests upon mounting
+
+            try {
+                console.log('Calling api...get reqs!');
+                const response = await axios.post(`${server.baseURL}/admin/getrequests`, data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'  //not sure if this is needed
+                        }
+                    }
+                );
+                console.log('Called api successfully!');
+                console.log(response);
+
+                this.formRequests = response.data;
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        //upon rendering published forms table, show 'VIEW REQUESTS' button only if there are requests for each form
+        hasRequests(ogFormId) {
+            for (let i = 0; i < this.formRequests.length; i++) {
+                if (this.formRequests[i].formId === ogFormId) {
+                    return true;
+                }
+            }
+            return false;
+
+        },
+
+        //upom clicking "view requests", show the requests for that form
+        showRequests(formID, formTitle) {
+
+            this.selectedTitle = formTitle;
+            this.selectedFormId = formID;
+
+            let matchFound = false;
+            this.formRequests.forEach((item) => {
+                if (item.formId === formID) {
+                    this.selectedReqs = item.request;
+                    console.log("selected reqs");
+                    console.log(this.selectedReqs);
+                    matchFound = true;
+                }
+            });
+
+            // Check if no matching formId was found, then set this.selectedReqs to an empty array
+            if (!matchFound) {
+                this.selectedReqs = [];
+            }
         },
 
         //Regarding Search
