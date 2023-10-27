@@ -3,6 +3,7 @@ import store from "../store/index.js";
 
 import Login from "../views/common/LogIn.vue";
 import Signup from "../views/common/SignUp.vue";
+import Home from "../views/common/LandingPage.vue"
 
 import DashboardCollector from "../components/Dashboard-Collector/Dashboard-Collector.vue";
 import JoinResearch from "../views/Data-Collector/JoinResearch.vue";
@@ -23,9 +24,14 @@ import NewPassword from "../views/common/EnterNewPassword.vue"
 const routes = [
     {
         path: "/",
+        name: "home",
+        component: Home,
+
+    },
+    {
+        path: "/login",
         name: "login",
         component: Login,
-
     },
     {
         path: "/signup",

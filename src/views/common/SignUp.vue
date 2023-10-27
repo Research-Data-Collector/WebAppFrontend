@@ -4,14 +4,14 @@
       <v-row align="center">
         <v-col cols="auto">
           <!-- Image on the left, 10px from the left corner -->
-          <v-img src="/src/assets/survey-y-logo.png" alt="Your Image"
-            style="margin-left: 10px; height: 40px; width: 90px"></v-img>
+          <router-link to="/"><v-img src="/src/assets/survey-y-logo.png" alt="Your Image"
+              style="margin-left: 10px; height: 40px; width: 90px"></v-img></router-link>
         </v-col>
         <v-spacer></v-spacer>
         <v-col cols="auto">
-          <span class="title">Already a member ? &nbsp; &nbsp;</span>
+          <span class="title">Already a user! &nbsp; &nbsp;</span>
           <!-- Sign Up button on the right -->
-          <router-link to="/" style="text-decoration: none; color: black"><v-btn class="custom-button" color="blue"
+          <router-link to="/login" style="text-decoration: none; color: black"><v-btn class="custom-button" color="blue"
               variant="outlined" position="relative">
               Log In
             </v-btn></router-link>
@@ -50,7 +50,7 @@
             <h3>Create your Account Today</h3>
           </v-card>
           <br />
-          <v-form lazy-validation @submit.prevent="onSignUp">
+          <v-form @submit.prevent="onSignUp">
             <v-container>
               <v-row max-width="100%">
                 <v-col cols="14" md="6">
@@ -64,22 +64,22 @@
 
               <br />
 
-              <v-select v-model="role" label="Role" :items="['Form Owner', 'Data Collector']"></v-select>
+              <v-select v-model="role" label="Role" :items=this.items :rules="roleRules"></v-select>
 
               <br />
 
-              <v-text-field v-model.trim="email" :rules="emailRules" label="E-mail" hide-details required></v-text-field>
+              <v-text-field v-model.trim="email" :rules="emailRules" label="E-mail" required></v-text-field>
 
               <br />
 
-              <v-text-field v-model="password" :rules="passwordRules" :counter="8" label="Pasword"
+              <v-text-field v-model="password" :rules="passwordRules" label="Password"
                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'"
                 @click:append="show1 = !show1" required></v-text-field>
 
               <br />
 
-              <v-text-field v-model="confirmPassword" :rules="passwordRules" label="Confirm Pasword" type="password"
-                hide-details required></v-text-field>
+              <v-text-field v-model="confirmPassword" :rules="confirmPasswordRules" label="Confirm Password"
+                type="password" required></v-text-field>
 
               <br />
 
@@ -111,6 +111,8 @@ export default {
     dialog: false,
     valid: true,
     otp: "",
+
+
     fname: "",
     lname: "",
     email: "",
@@ -118,8 +120,56 @@ export default {
     role: null,
     confirmPassword: "",
     roleId: 0,
-    items: ["Form Owner", "Data Collector"],
+    items: ["Research Owner", "Data Collector"],
   }),
+
+
+
+  computed: {
+    confirmPasswordRules() {
+      return [
+        (v) => !!v || "Confirm Password is required",
+        (v) => (v === this.password) || "Password does not match",
+      ];
+    },
+
+    roleRules() {
+      return [
+        (v) => !!v || "Role is required",
+      ];
+    },
+
+
+    passwordRules() {
+      return [
+        v => !!v || 'Please enter your password',
+        v => (v && v.length >= 6 && v.length <= 20) || 'Password must be at least 6 characters and less than 20 characters',
+        v => (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,20}$/).test(v) || 'Password must contain at least one number, one uppercase, one lowercase and one special character',
+        
+
+      
+      ];
+    },
+
+    emailRules() {
+      return [
+        v => !!v || 'Please enter your e-mail',
+        v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+      ];
+    },
+
+    nameRules() {
+      return [
+        (v) => !!v || "Name is required"];
+    },
+
+
+
+
+
+  },
+
+
 
   // components: {
   //   otpDialog,
@@ -135,52 +185,46 @@ export default {
       console.log(payload);
 
       const response = await axios.post(`${server.baseURL}/auth/register`, payload).then((response) => {
-        console.log(response);
-        console.log(payload);
+        if (response.status === 201) {
+          this.$store.commit('setFirstReg', true);
+          this.$store.commit('setEmailAddress', payload.email);
+          //role based login for the users
+
+          if (payload.roleId == 1) {
+            this.$router.push({ name: 'create-organization' });
+          }
+          else if (payload.roleId == 2) {
+            this.$router.push({ name: 'verify-otp' });
+          }
+          else {
+            alert("Something went wrong!. Please try again.")
+          }
+        }
 
       }).catch((error) => {
         error = error;
         console.log(error);
-        alert(error + ". " + "Please try again with a different email.");
+        alert("Please try again with a different email.");
 
       });
     },
 
     onSignUp() {
-      if (this.fname == "" || this.lname == "" || this.email == "" || this.password == "" || this.confirmPassword == "" || this.role == null) {
-        alert("Please fill  all the  fields");
+      const userData = {
+        fname: this.fname,
+        lname: this.lname,
+        email: this.email,
+        password: this.password,
+        roleId: this.role === 'Research Owner' ? 1 : 2,
       }
-      else if (this.password != this.confirmPassword) {
-        alert("Passwords do not match")
-      }
-      else if (this.password.length < 6) {
-        alert("Password should be atleast 6 characters long")
-      }
-      else {
-        const userData = {
-          fname: this.fname,
-          lname: this.lname,
-          email: this.email,
-          password: this.password,
-          roleId: this.role === 'Form Owner' ? 1 : 2,
-        }
-        //send user data to backend 
-        // console.log(userData);
-        this.signup(userData);
-        this.$store.commit('setFirstReg', true);
+      //send user data to backend 
 
-        if (userData.roleId === 1) {
-          // console.log(response)
-          this.$router.push({ name: 'create-organization' });
-        }
-        else {
-          this.$router.push({ name: 'verify-otp' });
-          // alert(response.data.message)
-        }
-      }
+
+      this.signup(userData);
+
     },
 
-    
+
 
 
 

@@ -10,8 +10,11 @@
                     <v-form lazy-validation @submit.prevent="onOrganizationSubmit">
                         <v-container>
 
-                            <v-text-field label="Enter Organization Name" v-model="orgname" type="text" required></v-text-field>
-                            <v-text-field label="Enter Your Email" v-model="email" type="text" required></v-text-field>
+                            <v-text-field label="Enter Organization Name" v-model="orgname" type="text"
+                                required></v-text-field>
+                            <v-text-field label="Enter Your Email" v-model="email" :rules="emailRule" type="text"
+                                required></v-text-field>
+                            {{ this.$store.getters.getEmailAddress }}
 
                             <br />
 
@@ -38,7 +41,7 @@
 <script>
 import axios from 'axios';
 import { server } from '../../helper.js';
-import router from '../../router/index.js';
+import { computed } from 'vue';
 
 
 
@@ -71,7 +74,7 @@ export default {
             }
             this.sendOrganization(orgData)
             if (true) {
-                console.log(orgData);   
+                console.log(orgData);
             }
             else {
                 // alert(response.data.message)
@@ -79,6 +82,16 @@ export default {
         },
 
 
+    },
+
+
+    computed: {
+        emailRule() {
+            return [
+                (v) => !!v || 'E-mail is required',
+                (v) => (v === this.$store.getters.getEmailAddress) || 'E-mail must match with previous one'
+            ]
+        },
     }
 
 

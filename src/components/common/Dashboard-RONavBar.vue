@@ -108,7 +108,7 @@
       role: "",
       // (this.$store.getters.getSessionData.user.roleId === 1) ? 'Research Owner' : 'Research Data Collector'
       items: [
-        { title: 'Update Profile', route: "/dashboard-collector/update-profile-2"},
+        { title: 'Update Profile', route: "/dashboard-research-owner/update-profile-1"},
         { title: 'Log Out', route: "/"},
       ],
       

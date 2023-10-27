@@ -19,7 +19,7 @@
           <v-col>
             <div class="content-box-profile">
               <v-card justify-center flat style="background-color: rgba(194, 192, 210, 1);">
-                <v-img src="/src/assets/pro-img.svg" class="mx-auto" style="width: 100px; height: 100px;"></v-img>
+                <v-avatar size="100"><v-img src="/src/assets/pro-img-1.jpg" class="mx-auto" style="width: 2000px; height: 100px;"></v-img></v-avatar>
                 <v-card-text>
                   <h4>{{ userName = (this.$store.getters.getSessionData.user.fname + " " +
                     this.$store.getters.getSessionData.user.lname) }}</h4>

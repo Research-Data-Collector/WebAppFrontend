@@ -11,6 +11,8 @@ const store = createStore({
         isLogged : false,
         
         firstReg : false,
+
+        emailAddress : null,
     },
     getters: {
         getSessionData(state) {
@@ -23,6 +25,9 @@ const store = createStore({
 
         getFirstReg(state) {
             return state.firstReg;
+        },
+        getEmailAddress(state) {
+            return state.emailAddress;
         }
     },
     mutations: {
@@ -37,6 +42,10 @@ const store = createStore({
 
         setFirstReg(state, firstReg) {
             state.firstReg = firstReg;
+        },
+
+        setEmailAddress(state, emailAddress) {
+            state.emailAddress = emailAddress;
         }
     },
     actions: {
@@ -50,7 +59,13 @@ const store = createStore({
 
         setFirstReg({ commit }, firstReg) {
             commit('setFirstReg', firstReg);
+        },
+
+        setEmailAddress({ commit }, emailAddress) {
+            commit('setEmailAddress', emailAddress);
         }
+
+
 
     },
     plugins: [createPersistedState()]

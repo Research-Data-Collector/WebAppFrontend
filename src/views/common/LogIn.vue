@@ -4,8 +4,8 @@
             <v-row align="center">
                 <v-col cols="auto">
                     <!-- Image on the left, 10px from the left corner -->
-                    <v-img src="/src/assets/survey-y-logo.png" alt="Your Image"
-                        style="margin-left: 10px; height: 40px; width: 90px"></v-img>
+                    <router-link to="/"><v-img src="/src/assets/survey-y-logo.png" alt="Your Image"
+                        style="margin-left: 10px; height: 40px; width: 90px"></v-img></router-link>
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col cols="auto">
@@ -97,16 +97,30 @@ export default {
     data() {
         return {
             email: "",
-            emailRules: [
-                v => !!v || 'Please enter your e-mail',
-                v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-            ],
+
             password: "",
-            passwordRules: [
-                v => !!v || 'Please enter your password',
-            ],
+            
         };
     },
+
+    computed: {
+        emailRules() {
+            return [
+                v => !!v || 'Please enter your e-mail',
+                v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+        ];
+        },
+
+        passwordRules() {
+            return[
+                v => !!v || 'Please enter your password',
+        ];
+        }
+
+    },
+
+
+
     methods: {
         async login() {
             const userData = {
