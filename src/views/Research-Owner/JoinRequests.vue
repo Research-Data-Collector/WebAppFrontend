@@ -81,8 +81,6 @@
                                     <b>
                                         {{ text }}
                                     </b>
-
-
                                     <template v-slot:actions>
                                         <v-btn color="white" variant="text" @click="snackbar = false">
                                             Close
@@ -90,7 +88,7 @@
                                     </template>
                                 </v-snackbar>
 
-                                <v-btn variant="tonal" @click="declineCard(i)">
+                                <v-btn variant="tonal" @click="declineCard(i.userId)">
                                     Decline
                                 </v-btn>
                             </v-card-actions>
