@@ -46,6 +46,7 @@
 
                         </v-col>
                     </v-row>
+                    <FooterDefault></FooterDefault>
                 </v-main>
 
             </v-container>
@@ -55,7 +56,13 @@
 </template>
   
 <script>
+import FooterDefault from "../../components/common/Footer-Default.vue";
 export default {
+
+    components: {
+        FooterDefault,
+    },
+
     name: 'LandingPage',
 
     data() {

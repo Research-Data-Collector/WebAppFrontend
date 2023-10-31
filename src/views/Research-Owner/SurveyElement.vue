@@ -1,6 +1,6 @@
 <template>
-    <v-card width="400px" height="250px"> <!--@click="openDialog(form)" -->
-        <v-card-title>
+    <v-card width="auto" height="auto" > <!--@click="openDialog(form)" -->
+        <v-card-title class="justify-center">
             
             <h4> {{ form.title }}</h4>
         </v-card-title>
@@ -8,8 +8,8 @@
             <p> {{ form.description }}</p>
         </v-card-text>
 
-        <v-card-text>
-        <b>
+        <v-card-text v-if="form.createdAt">
+            <b>
             Created on: {{form.createdAt.slice(0, 10)}}
         </b>
         </v-card-text>
@@ -24,15 +24,17 @@
                     </template>
                     <!-- DIALOG CONTENT -->
                     <v-card>
-                        <v-card-title>
-                            <span class="text-h5">{{ form.title }}</span>
-                        </v-card-title>
+                        
                         <v-card-actions>
-                            <v-spacer></v-spacer>
                             <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
                                 Close
                             </v-btn>
+                            <v-spacer></v-spacer>
                         </v-card-actions>
+                        <v-card-title class="text-center">
+                            <span class="text-h5">{{ form.title }}</span>
+                        </v-card-title>
+                        
                         <!-- FORM -->
                         <v-container fluid>
                             <div class="survey"> <!--  style="height: 300px;" -->

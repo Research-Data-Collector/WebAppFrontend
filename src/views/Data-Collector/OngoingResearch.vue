@@ -28,10 +28,14 @@
 
   <v-container v-if="selectedItem" fluid>
     <v-card scrollable>
-      <v-card-actions><v-btn @click="selectItem(null)">Close</v-btn></v-card-actions>
+      <!-- {{ joinedResearches.find((form) => form.formId === selectedItem) }} -->
+      
+      <SurveyElement :form="joinedResearches.find((form) => form.formId === selectedItem)"></SurveyElement>
+      
+      <!-- <v-card-actions><v-btn @click="selectItem(null)">Close</v-btn></v-card-actions>
       <v-card-title>
         {{ joinedResearches.find((form) => form.formId === selectedItem).data.title }}
-      </v-card-title>
+      </v-card-title> -->
       <!-- {{ joinedResearches.find((form) => form.formId === selectedItem).data.fields }} -->
     </v-card>
   </v-container>
@@ -40,7 +44,14 @@
 <script>
 import axios from 'axios';
 import { server } from '../../helper.js';
+import SurveyElement from "../Research-Owner/SurveyElement.vue"
+
 export default {
+
+  components: {
+    SurveyElement,
+  },
+
   data() {
     return {
       joinedResearches: [],
