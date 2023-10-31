@@ -43,70 +43,90 @@
     </div>
     <div class="container" style="padding-top: 60px">
 
-      <v-toolbar title="Submissions ">
-        <h2>{{ selectedTitle }}</h2>
-        <v-btn style="margin-left: 50px" @click="downloadSubmissions()">
-          DOWNLOAD ALL
-        </v-btn>
-      </v-toolbar>
 
-      <v-table>
-        <thead>
-          <tr>
-            <th class="text-center">
-              Submission ID
-            </th>
-            <th class="text-center">
-              Submitted By
-            </th>
-            <th class="text-center">
-              Date
-            </th>
-            <th class="text-center">
-              Time
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(i, index) in submissions[0]" :key="i.id">
-            <td>{{ i.id }}</td>
-            <td>{{ submissions[1][index].fname + " " + submissions[1][index].lname }}</td>
-            <td>{{ i.createdAt.slice(0, 10) }}</td>
-            <td>{{ i.createdAt.slice(11, 19) }}</td>
-          </tr>
-        </tbody>
-      </v-table>
-      <br>
-      <br>
+      <div v-if="showSubissionTable">
+        <v-toolbar title="Submissions ">
+          <h2>{{ selectedTitle }}</h2>
 
+
+
+          <v-btn style="margin-left: 30px" variant="tonal" v-bind="props" @click="toggleTable">Show Entries</v-btn>
+
+          <v-btn style="margin-left: 20px" variant="tonal" @click="downloadSubmissions()">
+            DOWNLOAD ALL
+          </v-btn>
+        </v-toolbar>
+
+        <v-table>
+          <thead>
+            <tr>
+              <th class="text-center">
+                Submission ID
+              </th>
+              <th class="text-center">
+                Submitted By
+              </th>
+              <th class="text-center">
+                Date
+              </th>
+              <th class="text-center">
+                Time
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(i, index) in submissions[0]" :key="i.id">
+              <td>{{ i.id }}</td>
+              <td>{{ submissions[1][index].fname + " " + submissions[1][index].lname }}</td>
+              <td>{{ i.createdAt.slice(0, 10) }}</td>
+              <td>{{ i.createdAt.slice(11, 19) }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+        <br>
+        <br>
+
+      </div>
     </div>
 
     <!-- form input table -->
     <div>
-      <button @click="toggleTable">Toggle Table</button>
+
       <!-- <div >     v-if="showTable" -->
-      <div>
+      <div v-if="showTable">
+
         <v-table>
           <thead>
             <tr>
               <th v-for="(question, index) in qheaders" :key="index">
-                <div class="truncate-text">{{ question }}</div></th>
+                <div class="truncate-text">{{ question }}</div>
+              </th>
 
             </tr>
           </thead>
           <tbody>
-          <tr v-for="(row, index) in qanswers" :key="index">
-            <td v-for="(answer, index) in row" :key="index">
-              <div class="truncate-text">{{ answer }} </div></td>
+            <tr v-for="(row, index) in qanswers" :key="index">
+              <td v-for="(answer, index) in row" :key="index">
+                <div class="truncate-text">{{ answer }} </div>
+              </td>
             </tr>
-         
-        </tbody>
+
+          </tbody>
         </v-table>
       </div>
+
+
+
     </div>
+
+
+
+
     <br><br><br>
   </div>
 </template>
+
+
 <script>
 import axios from "axios";
 import { server } from "../../helper";
@@ -131,12 +151,15 @@ export default {
       qheaders: [],
       qanswers: [], //list of lists of answers
 
+      //dialog: false,
+
 
       loaded: false,
       loading: false,
       searchQuery: "",
 
 
+      showSubissionTable: false,
       selectedTitle: '',
       selectedSubs: [],//let's put dummy data for now otherwise should be a prop from the rresearch form selected
       submissions: [],
@@ -164,6 +187,9 @@ export default {
     },
 
     async showSubmissions(ID, title) {
+
+      this.showTable = false;
+      this.showSubissionTable = true;
 
       //this.selectedSubs = this.submissions[index].subs;
       this.selectedTitle = title;
@@ -255,7 +281,8 @@ export default {
 
     toggleTable() {
 
-
+      this.qheaders = [];
+      this.qanswers = [];
       const question_headers = ['Submission ID'];
 
       this.submissions[0][0].data.forEach(question => {
@@ -279,7 +306,7 @@ export default {
         this.qanswers.push(answers);//[submission.id, q1.answer, q2.answer...
       });
       console.log(this.qanswers)
-
+      this.showTable = true
     },
   }
 }
@@ -287,13 +314,13 @@ export default {
 </script>
 
 <style>
-
 .truncate-text {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: auto;
-  max-width: 100px; /* Set your desired maximum cell width */
-  max-height: 50px; 
+  max-width: 100px;
+  /* Set your desired maximum cell width */
+  max-height: 50px;
 }
 
 .truncate-text:hover {

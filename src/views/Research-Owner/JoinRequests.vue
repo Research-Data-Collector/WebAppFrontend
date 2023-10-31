@@ -2,7 +2,7 @@
     <div>
         <div class="container" style="padding-top: 10px">
             <h3>Accept Join Requests</h3>
-
+{{ snackbar }}
 
             <v-toolbar title="Published Forms">
                 <v-card class="mx-auto" color="grey-lighten-3" max-width="400" min-width="250">
@@ -43,10 +43,20 @@
 
 
         <div class="container" style="padding-top: 40px;">
+            <v-snackbar v-model="snackbar" :timeout="timeout" color="success">
+                                    <b>
+                                        {{ text }}
+                                    </b>
+                                    <template v-slot:actions>
+                                        <v-btn color="white" variant="text" @click="snackbar = false">
+                                            Close
+                                        </v-btn>
+                                    </template>
+                                </v-snackbar>
             <v-container fluid>
                 <v-row>
                     <v-col cols="12">
-                        <h3>Join Requests for {{ selectedTitle }}</h3>
+                        <h3> {{ heading}}</h3>
 
                     </v-col>
                     <v-col v-for="i in selectedReqs" :key="i.userId" cols="12" sm="6" md="4" lg="3">
@@ -76,28 +86,18 @@
                                 <v-btn variant="tonal" @click="acceptCard(i.userId)">
                                     Accept
                                 </v-btn>
-
-                                <v-snackbar v-model="snackbar" :timeout="timeout" color="success">
-                                    <b>
-                                        {{ text }}
-                                    </b>
-                                    <template v-slot:actions>
-                                        <v-btn color="white" variant="text" @click="snackbar = false">
-                                            Close
-                                        </v-btn>
-                                    </template>
-                                </v-snackbar>
-
                                 <v-btn variant="tonal" @click="declineCard(i.userId)">
                                     Decline
                                 </v-btn>
+
+                               
                             </v-card-actions>
                         </v-card>
                     </v-col>
                 </v-row>
             </v-container>
         </div>
-
+<br><br>
     </div>
 </template>
 
@@ -122,7 +122,7 @@ export default {
             //         snackbar: false,
             //   alertMessage: "Accepted JOin Requested successfully!",
 
-
+            heading: "",
             showMessage: false,
             //Snakbar
             snackbar: false,
@@ -151,7 +151,7 @@ export default {
                 // Send to backend
                 await this.addMemberToBackend(data);
                 //show Alert
-                this.snackbar = true;
+                //this.snackbar = true;
                 //render updated list of requests
                 await this.getrequests({ email: this.$store.getters.getSessionData.user.email });
                 this.showRequests(this.selectedFormId, this.selectedTitle);
@@ -172,7 +172,7 @@ export default {
                 // Send to backend
                 await this.addMemberToBackend(data);
                 //show Alert
-                this.snackbar = true;
+                //this.snackbar = true;
                 //render updated list of requests
                 await this.getrequests({ email: this.$store.getters.getSessionData.user.email });
                 this.showRequests(this.selectedFormId, this.selectedTitle);
@@ -195,6 +195,7 @@ export default {
                 console.log('Called api successfully!');
                 console.log(response);
                 this.text = response.data.message;
+                this.snackbar = true;
 
                 //this.getforms()
             } catch (error) {
@@ -260,11 +261,11 @@ export default {
 
         //upom clicking "view requests", show the requests for that form
         showRequests(formID, formTitle) {
-
+            this.heading = "Join Requests for " + formTitle;
             this.selectedTitle = formTitle;
             this.selectedFormId = formID;
 
-            let matchFound = false;
+            const matchFound = false;
             this.formRequests.forEach((item) => {
                 if (item.formId === formID) {
                     this.selectedReqs = item.request;
