@@ -50,7 +50,7 @@
             <h3>Create your Account Today</h3>
           </v-card>
           <br />
-          <v-form @submit.prevent="onSignUp">
+          <v-form @submit.prevent="onSignUp" height="500">
             <v-container>
               <v-row max-width="100%">
                 <v-col cols="14" md="6">
@@ -62,21 +62,21 @@
                 </v-col>
               </v-row>
 
-              <br />
+              <!-- <br /> -->
 
               <v-select v-model="role" label="Role" :items=this.items :rules="roleRules"></v-select>
 
-              <br />
+              <!-- <br /> -->
 
               <v-text-field v-model.trim="email" :rules="emailRules" label="E-mail" required></v-text-field>
 
-              <br />
+              <!-- <br /> -->
 
               <v-text-field v-model="password" :rules="passwordRules" label="Password"
                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'"
                 @click:append="show1 = !show1" required></v-text-field>
 
-              <br />
+              <!-- <br /> -->
 
               <v-text-field v-model="confirmPassword" :rules="confirmPasswordRules" label="Confirm Password"
                 type="password" required></v-text-field>
@@ -88,23 +88,23 @@
           </v-form>
         </v-sheet>
 
-        <!-- OTP code entering window. -->
-        <!-- <otpDialog v-if="dialog"></otpDialog> -->
-
-
 
       </v-main>
+      <FooterDefault></FooterDefault>
     </v-content>
   </v-layout>
 </template>
   
 <script>
-
+import FooterDefault from "../../components/common/Footer-Default.vue";
 import axios from 'axios';
 import { server } from '../../helper.js';
 import router from '../../router/index.js';
 
 export default {
+  components: {
+        FooterDefault,
+    },
   name: "Signup",
   data: () => ({
     show1: false,

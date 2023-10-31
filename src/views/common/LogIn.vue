@@ -84,6 +84,7 @@
                 <!-- </div> -->
             </v-main>
         </v-content>
+        <FooterDefault></FooterDefault>
     </v-layout>
 </template>
 
@@ -91,8 +92,12 @@
 <script>
 import axios from "axios";
 import { server } from "../../helper";
+import FooterDefault from "../../components/common/Footer-Default.vue";
 
 export default {
+    components: {
+        FooterDefault,
+    },
     name: "Login",
     data() {
         return {

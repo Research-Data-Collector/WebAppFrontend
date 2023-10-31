@@ -3,20 +3,15 @@
     <!-- <v-content> -->
       <router-view></router-view>
     <!-- </v-content> -->
-    <FooterDefault></FooterDefault>
   </v-app>
 </template>
 
 <script>
-import FooterDefault from "./components/common/Footer-Default.vue";
 
 
 export default {
   name: "App",
-  components: {
-    FooterDefault,
-  },
-};
+  };
 </script>
 
 <style>

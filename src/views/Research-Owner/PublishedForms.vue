@@ -1,535 +1,360 @@
 
 <template>
-<div>
+  <div>
     <div class="container" style="padding-top: 10px">
-        <h3>Published Forms</h3>
-  
-
-        <v-toolbar title="Published Forms">  
-      <v-card
-    class="mx-auto"
-    color="grey-lighten-3"
-    max-width="400"
-    min-width="250"
-  >
-    <v-card-text>
-      <v-text-field
-        :loading="loading"   
-         v-model="searchQuery"
-            
-        density="compact"
-        variant="solo"
-        label="Search"
-        append-inner-icon="mdi-magnify"
-        single-line
-        hide-details
-        @click:append-inner="onClick"
-      ></v-text-field>
-    </v-card-text>
-  </v-card>
-  
+      <h3>Published Forms</h3>
 
 
-    
-    </v-toolbar>
-       
-        <v-table fixed-header height="368px">
+      <v-toolbar title="Published Forms">
+        <v-card class="mx-auto" color="grey-lighten-3" max-width="400" min-width="250">
+          <v-card-text>
+            <v-text-field :loading="loading" v-model="searchQuery" density="compact" variant="solo" label="Search"
+              append-inner-icon="mdi-magnify" single-line hide-details @click:append-inner="onClick"></v-text-field>
+          </v-card-text>
+        </v-card>
+
+
+
+
+      </v-toolbar>
+
+      <v-table fixed-header height="368px">
         <thead>
-            <tr>
-                <th class="text-center">
-                    Form ID
-                </th>
-                <th class="text-center">
-                    Form Title
-                </th>
-                <th class="text-center">
-                    Actions
-                </th>
-            </tr>
+          <tr>
+            <th class="text-center">
+              Form ID
+            </th>
+            <th class="text-center">
+              Form Title
+            </th>
+            <th class="text-center">
+              Actions
+            </th>
+          </tr>
         </thead>
         <tbody>
-            <tr v-for="(i, index) in createdForms" :key="i.id">
-                <td>{{ i.id }}</td>
-                <td>{{  i.title  }}</td>
-                <td><v-btn  @click="showSubmissions(i.id, i.title)" >Show Submissions</v-btn></td>
-            </tr>
+          <tr v-for="(i, index) in createdForms" :key="i.id">
+            <td>{{ i.id }}</td>
+            <td>{{ i.title }}</td>
+            <td><v-btn @click="showSubmissions(i.id, i.title)">Show Submissions</v-btn></td>
+          </tr>
         </tbody>
-    </v-table>
+      </v-table>
     </div>
     <div class="container" style="padding-top: 60px">
-                
-        <v-toolbar title="Submissions "><h2>{{ selectedTitle }}</h2> 
-            <v-btn style="margin-left: 50px">
+
+
+      <div v-if="showSubissionTable">
+        <v-toolbar title="Submissions ">
+          <h2>{{ selectedTitle }}</h2>
+
+
+
+          <v-btn style="margin-left: 30px" variant="tonal" v-bind="props" @click="toggleTable">Show Entries</v-btn>
+
+          <v-btn style="margin-left: 20px" variant="tonal" @click="downloadSubmissions()">
             DOWNLOAD ALL
-      </v-btn>
-    </v-toolbar>
-       
-        <v-table >
-        <thead>
+          </v-btn>
+        </v-toolbar>
+
+        <v-table>
+          <thead>
             <tr>
-                <th class="text-center">
-                    Submission ID
-                </th>
-                <th class="text-center">
-                    Submitted By
-                </th>
-                <th class="text-center">
-                    Date
-                </th>
-                <th class="text-center">
-                    Time
-                </th>
+              <th class="text-center">
+                Submission ID
+              </th>
+              <th class="text-center">
+                Submitted By
+              </th>
+              <th class="text-center">
+                Date
+              </th>
+              <th class="text-center">
+                Time
+              </th>
             </tr>
-        </thead>
-        <tbody>
-            <tr v-for="i in submissions" :key="i.id">
-                <td>{{ i.id }}</td>
-                <td>{{  i.userId  }}</td>
-                <td>{{ i.createdAt.slice(0, 10) }}</td>
-                <td>{{  i.createdAt.slice(11,19)  }}</td>
-                   </tr>
-        </tbody>
-    </v-table>
-    <br>
-    <br>
-        
+          </thead>
+          <tbody>
+            <tr v-for="(i, index) in submissions[0]" :key="i.id">
+              <td>{{ i.id }}</td>
+              <td>{{ submissions[1][index].fname + " " + submissions[1][index].lname }}</td>
+              <td>{{ i.createdAt.slice(0, 10) }}</td>
+              <td>{{ i.createdAt.slice(11, 19) }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+        <br>
+        <br>
+
+      </div>
     </div>
-</div>
+
+    <!-- form input table -->
+    <div>
+
+      <!-- <div >     v-if="showTable" -->
+      <div v-if="showTable">
+
+        <v-table>
+          <thead>
+            <tr>
+              <th v-for="(question, index) in qheaders" :key="index">
+                <div class="truncate-text">{{ question }}</div>
+              </th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in qanswers" :key="index">
+              <td v-for="(answer, index) in row" :key="index">
+                <div class="truncate-text">{{ answer }} </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </v-table>
+      </div>
+
+
+
+    </div>
+
+
+
+
+    <br><br><br>
+  </div>
 </template>
+
+
 <script>
 import axios from "axios";
 import { server } from "../../helper";
+import ExcelJS from 'exceljs';
 
 export default {
-    name: 'PublishedForms',
-    mounted() {
-        //const org = JSON.stringify({ orgId: 2 })//this.$route.params.orgId);
-        const email = {email: this.$store.getters.getSessionData.user.email}
-        this.getforms(email);
-        console.log(email);
-    },
+  name: 'PublishedForms',
+  mounted() {
+    //const org = JSON.stringify({ orgId: 2 })//this.$route.params.orgId);
+    const email = { email: this.$store.getters.getSessionData.user.email }
+    this.getforms(email);
+    console.log(email);
+  },
 
-    data() {
-        return {
-            //related to search
-            createdForms : [],
-            loaded: false,
+  data() {
+    return {
+      //related to search
+      createdForms: [],
+
+      //table
+      showTable: false,
+      qheaders: [],
+      qanswers: [], //list of lists of answers
+
+      //dialog: false,
+
+
+      loaded: false,
       loading: false,
       searchQuery: "",
-           
-            submissionsOld: [{ id: 24, title: 'Form 2', 
-            subs:[{
-    sid: 1,
-    sby: "John Smith",
-    dat: "01.01.2023",
-    tim: "09:00"
-  },
-  {
-    sid: 2,
-    sby: "Jane Doe",
-    dat: "02.01.2023",
-    tim: "14:30"
-  },
-  {
-    sid: 3,
-    sby: "Alice Johnson",
-    dat: "03.01.2023",
-    tim: "20:15"
-  },
-  {
-    sid: 4,
-    sby: "Michael Brown",
-    dat: "04.01.2023",
-    tim: "12:45"
-  },
-  {
-    sid: 5,
-    sby: "Emily Wilson",
-    dat: "05.01.2023",
-    tim: "16:20"
-  },
-  {
-    sid:6,
-    sby:'Maya Hawkins',
-    dat: '12.02.2023',
-    tim: '18:42' 
-  },
-  {
-    sid:7,
-    sby:'Maya Hawkins',
-    dat: '12.02.2023',
-    tim: '18:42'
-  }]},
 
 
-            { id: 25, title: 'Form 3', subs: [{    sid: 6,
-    sby: "David Lee",
-    dat: "06.01.2023",
-    tim: "08:55"
-  },
-  {
-    sid: 7,
-    sby: "Sarah Davis",
-    dat: "07.01.2023",
-    tim: "19:30"
-  },
-  {
-    sid: 8,
-    sby: "Olivia Martinez",
-    dat: "08.01.2023",
-    tim: "10:10"
-  },
-  {
-    sid: 9,
-    sby: "James Taylor",
-    dat: "09.01.2023",
-    tim: "14:05"
-  },
-  {
-    sid: 10,
-    sby: "Sophia Johnson",
-    dat: "10.01.2023",
-    tim: "17:40"
-  },
-  {
-    sid: 11,
-    sby: "William Anderson",
-    dat: "11.01.2023",
-    tim: "09:25"
-  },
-  {
-    sid: 12,
-    sby: "Mia Garcia",
-    dat: "12.01.2023",
-    tim: "13:15"
-  }] },
-
-            { id: 26, title: 'Form 4', subs: [{
-    sid: 13,
-    sby: "Liam Hernandez",
-    dat: "13.01.2023",
-    tim: "22:10"
-  },
-  {
-    sid: 14,
-    sby: "Ava Wilson",
-    dat: "14.01.2023",
-    tim: "11:30"
-  },
-  {
-    sid: 15,
-    sby: "Benjamin Taylor",
-    dat: "15.01.2023",
-    tim: "18:55"
-  },
-  {
-    sid: 16,
-    sby: "Emma Martinez",
-    dat: "16.01.2023",
-    tim: "10:40"
-  },
-  {
-    sid: 17,
-    sby: "Jackson Brown",
-    dat: "17.01.2023",
-    tim: "15:20"
-  },
-  {
-    sid: 18,
-    sby: "Charlotte Davis",
-    dat: "18.01.2023",
-    tim: "20:45"
-  }] },
-
-            { id: 27, title: 'Form 5', subs: [  
-  {
-    sid: 19,
-    sby: "Sebastian Lee",
-    dat: "19.01.2023",
-    tim: "09:15"
-  },
-  {
-    sid: 20,
-    sby: "Olivia Wilson",
-    dat: "20.01.2023",
-    tim: "14:50"
-  },
-  {
-    sid: 21,
-    sby: "Lucas Hernandez",
-    dat: "21.01.2023",
-    tim: "17:25"
-  },
-  {
-    sid: 22,
-    sby: "Avery Johnson",
-    dat: "22.01.2023",
-    tim: "11:05"
-  },
-  {
-    sid: 23,
-    sby: "Harper Smith",
-    dat: "23.01.2023",
-    tim: "19:10"
-  },
-  {
-    sid: 24,
-    sby: "Ethan Davis",
-    dat: "24.01.2023",
-    tim: "08:40"
-  }] },
-            { id: 28, title: 'Form 6', subs: [{
-    sid: 25,
-    sby: "Sophia Martinez",
-    dat: "25.01.2023",
-    tim: "14:00"
-  },
-  {
-    sid: 26,
-    sby: "Jackson Wilson",
-    dat: "26.01.2023",
-    tim: "21:35"
-  },
-  {
-    sid: 27,
-    sby: "Emma Johnson",
-    dat: "27.01.2023",
-    tim: "12:20"
-  },
-  {
-    sid: 28,
-    sby: "Aiden Lee",
-    dat: "28.01.2023",
-    tim: "16:45"
-  },
-  {
-    sid: 29,
-    sby: "Olivia Davis",
-    dat: "29.01.2023",
-    tim: "09:30"
-  },
-  {
-    sid: 30,
-    sby: "Mason Brown",
-    dat: "30.01.2023",
-    tim: "13:55"
-  },
-  {
-    sid: 31,
-    sby: "Charlotte Smith",
-    dat: "31.01.2023",
-    tim: "18:05"
-  },
-  {
-    sid: 32,
-    sby: "Elijah Johnson",
-    dat: "01.02.2023",
-    tim: "10:50"
-  },
-  {
-    sid: 33,
-    sby: "Ava Wilson",
-    dat: "02.02.2023",
-    tim: "15:15"
-  },
-  {
-    sid: 34,
-    sby: "William Davis",
-    dat: "03.02.2023",
-    tim: "22:30"
-  },
-  {
-    sid: 35,
-    sby: "Olivia Lee",
-    dat: "04.02.2023",
-    tim: "11:10"
-  }]},
-  { id: { id: 28, title: 'Form 7', subs: [{
-    sid: 25,
-    sby: "Sophia Martinez",
-    dat: "25.01.2023",
-    tim: "14:00"
-  },
-  {
-    sid: 26,
-    sby: "Jackson Wilson",
-    dat: "26.01.2023",
-    tim: "21:35"
-  }]}}
-  ,
-  { id: { id: 28, title: 'Form 8', subs: [{
-    sid: 25,
-    sby: "Sophia Martinez",
-    dat: "25.01.2023",
-    tim: "14:00"
-  },
-  {
-    sid: 26,
-    sby: "Jackson Wilson",
-    dat: "26.01.2023",
-    tim: "21:35"
-  }]}}
-  ,
-
-
-  { id: 28, title: 'Form 9', subs: [{
-    sid: 25,
-    sby: "Sophia Martinez",
-    dat: "25.01.2023",
-    tim: "14:00"
-  },
-  {
-    sid: 26,
-    sby: "Jackson Wilson",
-    dat: "26.01.2023",
-    tim: "21:35"
-  },
-  {
-    sid: 27,
-    sby: "Emma Johnson",
-    dat: "27.01.2023",
-    tim: "12:20"
-  },
-  {
-    sid: 28,
-    sby: "Aiden Lee",
-    dat: "28.01.2023",
-    tim: "16:45"
-  },
-  {
-    sid: 29,
-    sby: "Olivia Davis",
-    dat: "29.01.2023",
-    tim: "09:30"
-  },
-  {
-    sid: 30,
-    sby: "Mason Brown",
-    dat: "30.01.2023",
-    tim: "13:55"
-  },
-  {
-    sid: 31,
-    sby: "Charlotte Smith",
-    dat: "31.01.2023",
-    tim: "18:05"
-  },
-  {
-    sid: 32,
-    sby: "Elijah Johnson",
-    dat: "01.02.2023",
-    tim: "10:50"
-  },
-  {
-    sid: 33,
-    sby: "Ava Wilson",
-    dat: "02.02.2023",
-    tim: "15:15"
-  },
-  {
-    sid: 34,
-    sby: "William Davis",
-    dat: "03.02.2023",
-    tim: "22:30"
-  },
-  {
-    sid: 35,
-    sby: "Olivia Lee",
-    dat: "04.02.2023",
-    tim: "11:10"
-  }] }
-            ],
-            selectedTitle: '',
-            selectedSubs: [],//let's put dummy data for now otherwise should be a prop from the rresearch form selected
-            submissions: [],
+      showSubissionTable: false,
+      selectedTitle: '',
+      selectedSubs: [],//let's put dummy data for now otherwise should be a prop from the rresearch form selected
+      submissions: [],
 
 
 
-        };
+    };
+  },
+  methods: {
+    async getforms(data) {
+      //get the list of Json forms from a get request
+
+      try {
+        const response = await axios.post(`${server.baseURL}/admin/getOrgforms`, data,
+          {
+            headers: {
+              'Content-Type': 'application/json'  //not sure if this is needed
+            }
+          }
+        );
+        this.createdForms = response.data;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    methods: {
-      async getforms(data) {
-            //get the list of Json forms from a get request
 
-            try {
-                const response = await axios.post(`${server.baseURL}/admin/getOrgforms`, data,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json'  //not sure if this is needed
-                        }
-                    }
-                );
-                this.createdForms = response.data;
-            } catch (error) {
-                console.log(error);
+    async showSubmissions(ID, title) {
+
+      this.showTable = false;
+      this.showSubissionTable = true;
+
+      //this.selectedSubs = this.submissions[index].subs;
+      this.selectedTitle = title;
+      //get the list of Json forms from a get request
+      const data = { formId: ID };
+
+      try {
+        const response = await axios.post(`${server.baseURL}/admin/getsubmissions`, data,
+          {
+            headers: {
+              'Content-Type': 'application/json'  //not sure if this is needed
             }
-        },
+          }
+        );
+        this.submissions = response.data;
+        console.log(this.submissions);
+      } catch (error) {
+        console.log(error);
+      }
 
-        async showSubmissions(ID, title) {
+    },
 
-            //this.selectedSubs = this.submissions[index].subs;
-            this.selectedTitle = title;
-            //get the list of Json forms from a get request
-            const data = {formId: ID};
-
-            try {
-                const response = await axios.post(`${server.baseURL}/admin/getsubmissions`, data,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json'  //not sure if this is needed
-                        }
-                    }
-                );
-                this.submissions = response.data;
-            } catch (error) {
-                console.log(error);
-            }
-
-        },
-
-        //Regarding Search
-        onClick () {
-        this.loading = true,
+    //Regarding Search
+    onClick() {
+      this.loading = true,
         console.log(this.searchQuery)
 
-        setTimeout(() => {
-          this.loading = false
-          this.loaded = true
-        }, 2000)
-      },
-    }
+      setTimeout(() => {
+        this.loading = false
+        this.loaded = true
+      }, 2000)
+    },
+
+    //EXCEL
+    async downloadSubmissions() {
+      // Fetch all submissions from your backend
+      const submissions = this.submissions[0]     //send all for now, including user id form id time, dats...[0].data;//await this.fetchSubmissions();
+
+
+      console.log(submissions);
+      // Create a new Excel workbook and worksheet
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Submissions for Form A');
+
+      //     // Define the header row
+      // question headers
+      const question_headers = ['Submission ID'];
+      // this.submissions[0].forEach(question => {
+      //     questions_row.push(question.question);})
+
+      submissions[0].data.forEach(question => {
+        question_headers.push(question.question)
+
+      });
+
+      worksheet.addRow(question_headers);
+      console.log("added column headers")
+
+      //     // Add submission data to the worksheet
+      submissions.forEach(submission => {
+
+        const answers = [submission.id];
+        submission.data.forEach(question => {
+          answers.push(question.answer)
+        });
+        console.log(answers)
+
+        worksheet.addRow(answers);//[submission.id, submission.formId, submission.userId, submission.data /* ... other fields ... */]);
+      });
+      console.log("added rows")
+
+      //     // Generate a Blob from the Excel workbook
+      const blob = await workbook.xlsx.writeBuffer();
+      console.log("generated blob")
+
+      //     // Create a download link
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'form_submissions.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      console.log("created download link")
+      // 
+    },
+
+
+    toggleTable() {
+
+      this.qheaders = [];
+      this.qanswers = [];
+      const question_headers = ['Submission ID'];
+
+      this.submissions[0][0].data.forEach(question => {
+        question_headers.push(question.question)
+
+      });
+      console.log(question_headers)
+      this.qheaders = question_headers;
+
+      this.showTable = !this.showTable;
+
+      //     // Add submission data to the worksheet
+      this.submissions[0].forEach(submission => {
+
+        const answers = [submission.id];
+        submission.data.forEach(question => {
+          answers.push(question.answer)
+        });
+        console.log(answers)
+
+        this.qanswers.push(answers);//[submission.id, q1.answer, q2.answer...
+      });
+      console.log(this.qanswers)
+      this.showTable = true
+    },
+  }
 }
 
 </script>
 
 <style>
+.truncate-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: auto;
+  max-width: 100px;
+  /* Set your desired maximum cell width */
+  max-height: 50px;
+}
+
+.truncate-text:hover {
+  overflow: auto;
+}
+
+
 .table-head h3 {
-    text-align: left;
-    margin-top: 10px;
-    padding-right: 10px;
+  text-align: left;
+  margin-top: 10px;
+  padding-right: 10px;
 }
 
 .table-head button {
 
-    float: right;
-    width: 150px;
-    height: 40px;
-    border: 1px solid blue;
-    background: blue;
-    color: #fff;
-    cursor: pointer;
+  float: right;
+  width: 150px;
+  height: 40px;
+  border: 1px solid blue;
+  background: blue;
+  color: #fff;
+  cursor: pointer;
 }
 
 .download-button {
-    text-align: right;
+  text-align: right;
 }
 
 .form-search input[type='text'] {
-    border: 1px solid #e2e8f5;
-    background-color: #ffffff;
-    height: 30px;
-    border-radius: 6px;
-    width: 232px;
-    padding: 5px 10px;
+  border: 1px solid #e2e8f5;
+  background-color: #ffffff;
+  height: 30px;
+  border-radius: 6px;
+  width: 232px;
+  padding: 5px 10px;
 }
 </style>

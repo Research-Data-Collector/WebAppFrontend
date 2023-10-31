@@ -8,10 +8,13 @@
                     <!-- Content of pages/components goes here -->
                     <router-view></router-view>
                 </v-container>
+                <FooterDefault></FooterDefault>
             </v-main>
+            
         </v-layout>
-        <FooterDefault></FooterDefault>
+        
     </v-app>
+    
 </template>
   
 <script>
