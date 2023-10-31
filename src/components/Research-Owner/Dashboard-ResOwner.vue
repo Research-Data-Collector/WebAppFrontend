@@ -16,7 +16,7 @@
   
 <script>
 import RONavBar from '../common/Dashboard-RONavBar.vue';
-import FooterDefault from '../common/Footer-Default.vue';
+import FooterDefault from "../common/Footer-Default.vue";
 
 export default {
     name: "Dashboard-ResOwner",
@@ -24,6 +24,8 @@ export default {
         RONavBar,
         FooterDefault,
     },
+
+    
 };
 </script>
   
