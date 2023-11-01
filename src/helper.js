@@ -1,3 +1,3 @@
 export const server = {
-    baseURL: 'http://surveyy-backend.duckdns.org:3000'
+    baseURL: 'webappbackend-production.up.railway.app'
 }
