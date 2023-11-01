@@ -2,7 +2,7 @@
     <div>
         <div class="container" style="padding-top: 10px">
             <h3>Accept Join Requests</h3>
-{{ snackbar }}
+<!-- {{ snackbar }} -->
 
             <v-toolbar title="Published Forms">
                 <v-card class="mx-auto" color="grey-lighten-3" max-width="400" min-width="250">
@@ -265,7 +265,7 @@ export default {
             this.selectedTitle = formTitle;
             this.selectedFormId = formID;
 
-            const matchFound = false;
+            let matchFound = false;
             this.formRequests.forEach((item) => {
                 if (item.formId === formID) {
                     this.selectedReqs = item.request;
