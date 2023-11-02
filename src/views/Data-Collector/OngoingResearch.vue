@@ -66,6 +66,7 @@ export default {
       };
       const response = await axios.post(`${server.baseURL}/users/joinedforms`, data).then((response) => {
         this.joinedResearches = response.data;
+        console.log(this.joinedResearches)
         return true;
       }).catch((error) => {
         console.log(error);

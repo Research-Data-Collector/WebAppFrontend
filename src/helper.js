@@ -1,3 +1,3 @@
 export const server = {
-    baseURL: 'webappbackend-production.up.railway.app'
+    baseURL: 'https://webappbackend-production.up.railway.app'
 }

@@ -63,9 +63,9 @@
               <th class="text-center">
                 Submission ID
               </th>
-              <th class="text-center">
+              <!-- <th class="text-center">
                 Submitted By
-              </th>
+              </th> -->
               <th class="text-center">
                 Date
               </th>
@@ -77,7 +77,7 @@
           <tbody>
             <tr v-for="(i, index) in submissions[0]" :key="i.id">
               <td>{{ i.id }}</td>
-              <td>{{ submissions[1][index].fname + " " + submissions[1][index].lname }}</td>
+              <!-- <td>{{ submissions[1][index].fname + " " + submissions[1][index].lname }}</td> -->
               <td>{{ i.createdAt.slice(0, 10) }}</td>
               <td>{{ i.createdAt.slice(11, 19) }}</td>
             </tr>
