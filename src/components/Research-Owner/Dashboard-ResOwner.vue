@@ -11,7 +11,7 @@
                     </v-container>
                     <FooterDefault></FooterDefault>
                 </v-main>
-            <v-content>
+            </v-content>
         </v-layout>
     </v-app>
 </template>
