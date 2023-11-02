@@ -1,8 +1,8 @@
 <template>
   <v-app>
-          <v-layout style="overflow-y:auto;">
+          <v-layout>
               <NavBar></NavBar>
-              <v-main>
+              <v-main style="overflow-y:auto;">
                   <!-- Main content -->
                   <v-container fluid>
                       <!-- Content of pages/components goes here -->
