@@ -1,8 +1,8 @@
 <template>
-    <v-app>
+    <v-app  style="overflow-y:auto;">
         <v-layout>
             <RONavBar></RONavBar>
-            <v-main style="overflow-y:auto;">
+            <v-main>
                 <!-- Main content -->
                 <v-container fluid>
                     <!-- Content of pages/components goes here -->
