@@ -34,9 +34,9 @@
         </thead>
         <tbody>
           <tr v-for="(i, index) in createdForms" :key="i.id">
-            <td>{{ i.id }}</td>
-            <td>{{ i.title }}</td>
-            <td><v-btn @click="showSubmissions(i.id, i.title)">Show Submissions</v-btn></td>
+            <td class="text-center">{{ i.id }}</td>
+            <td class="text-center">{{ i.title }}</td>
+            <td class="text-center"><v-btn @click="showSubmissions(i.id, i.title)">Show Submissions</v-btn></td>
           </tr>
         </tbody>
       </v-table>
@@ -75,11 +75,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(i, index) in submissions[0]" :key="i.id">
-              <td>{{ i.id }}</td>
+            <tr v-for="(i) in submissions[0]" :key="i.id">
+              <td class="text-center">{{ i.id }}</td>
               <!-- <td>{{ submissions[1][index].fname + " " + submissions[1][index].lname }}</td> -->
-              <td>{{ i.createdAt.slice(0, 10) }}</td>
-              <td>{{ i.createdAt.slice(11, 19) }}</td>
+              <td class="text-center">{{ i.createdAt.slice(0, 10) }}</td>
+              <td class="text-center">{{ i.createdAt.slice(11, 19) }}</td>
             </tr>
           </tbody>
         </v-table>

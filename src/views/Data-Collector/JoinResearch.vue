@@ -69,11 +69,11 @@
               </tr>
 
               <tr v-else v-for="(i) in searchResults" :key="i.id">
-                <td>{{ i.id }}</td>
-                <td>{{ i.title }}</td>
+                <td class="text-center">{{ i.id }}</td>
+                <td class="text-center">{{ i.title }}</td>
                 <!-- <td>{{ i.researchOwner }}</td> -->
-                <td>{{ i.description }}</td>
-                <td><v-btn color="green" :loading="loading" @click="joinResearch(i.id); load();"> Join Research </v-btn></td>
+                <td class="text-center">{{ i.description }}</td>
+                <td class="text-center"><v-btn color="green" :loading="loading" @click="joinResearch(i.id); load();"> Join Research </v-btn></td>
               </tr>
             </tbody>
           </v-table>

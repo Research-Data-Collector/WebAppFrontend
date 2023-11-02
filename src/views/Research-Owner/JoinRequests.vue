@@ -32,8 +32,8 @@
                 </thead>
                 <tbody>
                     <tr v-for="(i, index) in createdForms" :key="i.id">
-                        <td>{{ i.id }}</td>
-                        <td>{{ i.title }}</td>
+                        <td class="text-center">{{ i.id }}</td>
+                        <td class="text-center">{{ i.title }}</td>
                         <td><v-btn v-if="hasRequests(i.id)" @click="showRequests(i.id, i.title)">View Join Requests</v-btn>
                         </td>
                     </tr>
