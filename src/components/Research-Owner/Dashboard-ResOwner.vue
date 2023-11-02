@@ -1,6 +1,7 @@
 <template>
+    <v-content style="overflow-y:auto;">
     <v-app>
-        <v-content style="overflow-y:auto;">
+        
             <v-layout>
                 <RONavBar></RONavBar>
                 <v-main>
@@ -12,9 +13,10 @@
                     <FooterDefault></FooterDefault>
                 </v-main>
         </v-layout>
-    </v-content>
+    
         
     </v-app>
+        </v-content>
     
 </template>
   
