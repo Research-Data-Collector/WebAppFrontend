@@ -2,19 +2,16 @@
     <v-app>
         <v-layout>
             <RONavBar></RONavBar>
-            <v-main>
-                <!-- Main content -->
-                <v-container fluid>
-                    <!-- Content of pages/components goes here -->
-                    <router-view></router-view>
-                </v-container>
-                <FooterDefault></FooterDefault>
-            </v-main>
-            
+                <v-main style="overflow-y:auto;">
+                    <!-- Main content -->
+                    <v-container fluid>
+                        <!-- Content of pages/components goes here -->
+                        <router-view></router-view>
+                    </v-container>
+                    <FooterDefault></FooterDefault>
+                </v-main>
         </v-layout>
-        
     </v-app>
-    
 </template>
   
 <script>

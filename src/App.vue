@@ -20,6 +20,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  overflow-y: auto;
   color: #2c3e50;
 }
 

@@ -1,18 +1,17 @@
 <template>
-  <v-app style="overflow-y: hidden;">
-    <v-layout style="overflow: hidden;">
-      <NavBar></NavBar>
-      <v-main style="overflow: hidden;">
-        <!-- Main content -->
-        <v-container fluid>
-          <!-- Content of pages/components goes here -->
-          <router-view></router-view>
-        </v-container>
-        <FooterDefault></FooterDefault>
-      </v-main>
-    </v-layout>
-    
-  </v-app>
+  <v-app>
+          <v-layout>
+              <NavBar></NavBar>
+              <v-main style="overflow-y:auto;">
+                  <!-- Main content -->
+                  <v-container fluid>
+                      <!-- Content of pages/components goes here -->
+                      <router-view></router-view>
+                  </v-container>
+                  <FooterDefault></FooterDefault>
+              </v-main>
+      </v-layout>
+    </v-app>
 </template>
   
 <script>
