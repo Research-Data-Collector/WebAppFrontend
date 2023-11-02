@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app  style="overflow-y:auto;">
     <!-- <v-content> -->
       <router-view></router-view>
     <!-- </v-content> -->
