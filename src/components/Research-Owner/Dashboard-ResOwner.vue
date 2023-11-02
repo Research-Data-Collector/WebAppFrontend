@@ -1,9 +1,7 @@
 <template>
-    <v-content style="overflow-y:auto;">
     <v-app>
-        
-            <v-layout>
-                <RONavBar></RONavBar>
+        <v-layout style="overflow-y:auto;">
+            <RONavBar></RONavBar>
                 <v-main>
                     <!-- Main content -->
                     <v-container fluid>
@@ -13,11 +11,7 @@
                     <FooterDefault></FooterDefault>
                 </v-main>
         </v-layout>
-    
-        
     </v-app>
-        </v-content>
-    
 </template>
   
 <script>
