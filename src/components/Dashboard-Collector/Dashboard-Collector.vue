@@ -1,6 +1,6 @@
 <template>
   <v-app>
-        <v-content style="overflow-y:auto;">
+        <v-content>
             <v-layout>
                 <NavBar></NavBar>
                 <v-main>
