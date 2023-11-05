@@ -134,12 +134,12 @@ export default {
             };
             try {
                 const response = await axios.post(`${server.baseURL}/auth/login`, userData).then((response) => {
-                    console.log(userData);
+                    // console.log(userData);
                     // Move the code that accesses 'response' inside this then block
                     if (response.status === 201) {
                         const responseData = response.data;
                         const user = responseData.user;
-                        console.log(response);
+                        // console.log(response);
 
                         // Set the session data
 

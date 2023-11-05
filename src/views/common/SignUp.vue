@@ -182,7 +182,7 @@ export default {
 
     async signup(payload) {
       // const postData = JSON.stringify(payload);
-      console.log(payload);
+      // console.log(payload);
 
       const response = await axios.post(`${server.baseURL}/auth/register`, payload).then((response) => {
         if (response.status === 201) {
@@ -203,7 +203,7 @@ export default {
 
       }).catch((error) => {
         error = error;
-        console.log(error);
+        // console.log(error);
         alert("Please try again with a different email.");
 
       });
