@@ -8,7 +8,7 @@
         <v-row style="height: 100px;">
           <v-col>
             <div class="content-box">
-              <v-img src="../../../src/assets/survey-y-logo.png" class="mx-auto" style="width: 100px; height: 60px;"></v-img>
+              <v-img src="/Images/survey-y-logo.png" class="mx-auto" style="width: 100px; height: 60px;"></v-img>
             </div>
           </v-col>
         </v-row>
@@ -19,7 +19,7 @@
           <v-col>
             <div class="content-box-profile">
               <v-card justify-center flat style="background-color: rgba(194, 192, 210, 1);">
-                <v-avatar size="100"><v-img src="/src/assets/pro-img-1.jpg" class="mx-auto" style="width: 2000px; height: 100px;"></v-img></v-avatar>
+                <v-avatar size="100"><v-img src="/Images/pro-img-1.jpg" class="mx-auto" style="width: 2000px; height: 100px;"></v-img></v-avatar>
                 <v-card-text>
                   <h4>{{ userName = (this.$store.getters.getSessionData.user.fname + " " +
                     this.$store.getters.getSessionData.user.lname) }}</h4>

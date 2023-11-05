@@ -4,7 +4,7 @@
             <v-row align="center">
                 <v-col cols="auto">
                     <!-- Image on the left, 10px from the left corner -->
-                    <router-link to="/"><v-img src="@/assets/survey-y-logo.png" alt="Your Image"
+                    <router-link to="/"><v-img src="/Images/survey-y-logo.png" alt="Your Image"
                         style="margin-left: 10px; height: 40px; width: 90px"></v-img></router-link>
                 </v-col>
                 <v-spacer></v-spacer>
@@ -22,7 +22,7 @@
             <v-navigation-drawer location="right">
                 <v-list>
                     <v-list-item>
-                        <v-img id="right-bg" src="/src/assets/right-bg.png" alt="Your Image" class="mt-0"
+                        <v-img id="right-bg" src="/Images/right-bg.png" alt="Your Image" class="mt-0"
                             style="height: 100%; min-height: 640px; width: 100%" cover>
                         </v-img>
                     </v-list-item>
