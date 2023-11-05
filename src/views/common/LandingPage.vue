@@ -42,7 +42,7 @@
                             <br>
 
 
-                            <v-btn color="blue" flat>Get Started ></v-btn>
+                            <!-- <v-btn color="blue" flat>Get Started ></v-btn> -->
 
                         </v-col>
                     </v-row>
